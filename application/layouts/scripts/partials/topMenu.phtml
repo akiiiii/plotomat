@@ -1,0 +1,69 @@
+<?php
+$iterator = new RecursiveIteratorIterator(
+		$this->container, RecursiveIteratorIterator::SELF_FIRST);
+
+$registry = Zend_Registry::getInstance();
+$acl = unserialize($registry->acl);
+
+$auth = Zend_Auth::getInstance();
+if ($auth->hasIdentity())
+	$role = $auth->getIdentity()->role;
+else
+	$role = $registry->config->defaults->auth_default_role;
+	
+$prevDepth = - 1;
+//$iterator->setMaxDepth(0);
+
+foreach ( $iterator as $page ) {
+
+	if($acl->isAllowed($role, $page->_resource, $page->_privilege)) {
+		$access = 'allowed';
+	} elseif($page->_resource == '' && $page->_privilege == '') {
+		$access = 'allowed';
+	} else {
+		$access = 'denied';
+	}
+
+	//echo $role. " => ". $page->_resource . " => " . $page->_privilege . " / " . $access . "<br />";
+	
+	if($page->isVisible() && $access == 'allowed') {
+		$toggle = '';
+		$depth = $iterator->getDepth();
+		$isActive = $page->isActive(true);
+		if($depth > $prevDepth) {
+			if($prevDepth==-1) {
+				$html [] = '<ul class="nav">' . "\n"; /// das erste - ‰uﬂere ul
+			} else {
+				$html [] = '<ul class="dropdown-menu">' . "\n"; /// dropdown - ul
+			}
+		} else if ($prevDepth > $depth) {
+			for($i = $prevDepth; $i > $depth; $i--) {
+				$html [] = '</li>' . "\n";
+				$html [] = '</ul>' . "\n";
+			}
+			$html [] = '    </li>' . "\n";
+		} else {
+			$html [] = '    </li>' . "\n";
+		}
+		if($page->haspages()) {
+			$liClass = $isActive ? ' class="active dropdown" data-dropdown="dropdown"' : ' class="dropdown" data-dropdown="dropdown"';
+			$toggle = ' class="dropdown-toggle"';
+		} else {
+			$liClass = $isActive ? ' class="active"' : '';
+		}
+		$html [] = '<li' . $liClass . '>' . "\n";
+		$html [] = '<a ' . $toggle . ' href="' . $page->getHref() . '">' . $page->getLabel() . '</a>' . "\n";
+		$prevDepth = $depth;
+	}
+}
+//0
+for($i = $depth; $i > -1; $i--) {
+	$html [] = '</li>' . "\n";
+	$html [] = '</ul>' . "\n";
+}
+
+if(!empty($html))
+	echo join(PHP_EOL,$html);
+
+
+?>

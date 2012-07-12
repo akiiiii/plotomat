@@ -1,0 +1,17 @@
+<form id="login" action="<?= $this->element->getAction(); ?>"
+                 method="<?= $this->element->getMethod(); ?>">
+<p>
+Username<br />
+<?= $this->element->login_user; ?>
+</p>
+<p>
+Password<br />
+<?= $this->element->login_password; ?>
+</p>
+<p>
+Are you human?<br />
+<?= $this->element->login_captcha; ?>
+</p>
+<p>
+<?= $this->element->submit; ?>
+</p> </form>

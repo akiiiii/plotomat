@@ -1,0 +1,5 @@
+<h1><?php echo $this->aclRole->name; ?> Users</h1>
+<table class="bordered-table zebra-striped">
+<thead><tr><th>#</th><th>username</th><th>email</th><th></th><th></th></tr></thead>
+<?= $this->partialLoop('partials/userRow.phtml',$this->users)?>
+</table>

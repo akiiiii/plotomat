@@ -1,0 +1,53 @@
+<?php
+if (array_key_exists('error', $this->msgs) && sizeof($this->msgs['error']) > 0) {
+	?>
+	<div class="alert-message error">
+    	<a href="#" class="close">x</a>
+    <?php 
+	foreach($this->msgs['error'] as $message) {
+		echo "<p>".$message."</p>";
+	}
+    ?>
+	</div>
+	<?php 
+}
+
+if (array_key_exists('warning', $this->msgs) && sizeof($this->msgs['warning']) > 0) {
+	?>
+	<div class="alert-message warning">
+	<a href="#" class="close">x</a>
+	<?php
+	foreach($this->msgs['warning'] as $message) {
+	echo "<p>".$message."</p>";
+	}
+	?>
+	</div>
+	<?php
+}
+
+if (array_key_exists('success', $this->msgs) && sizeof($this->msgs['success']) > 0) {
+	?>
+	<div class="alert-message success">
+	<a href="#" class="close">x</a>
+	<?php
+	foreach($this->msgs['success'] as $message) {
+	echo "<p>".$message."</p>";
+	}
+	?>
+	</div>
+	<?php
+}
+
+if (array_key_exists('info', $this->msgs) && sizeof($this->msgs['info']) > 0) {
+	?>
+	<div class="alert-message info">
+	<a href="#" class="close">x</a>
+	<?php
+	foreach($this->msgs['info'] as $message) {
+	echo "<p>".$message."</p>";
+	}
+	?>
+	</div>
+	<?php
+}
+?>

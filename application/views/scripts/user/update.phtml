@@ -1,0 +1,7 @@
+<h1>Account Verwaltung - Update</h1>
+
+<?= $this->partial('partials/userForm.phtml', array(
+		'username' => $this->user->username,
+		'email' => $this->user->email,
+		'role_id' => $this->user->role_id,
+		'aclRoles' => $this->aclRoles))?>

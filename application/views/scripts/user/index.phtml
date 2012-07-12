@@ -1,0 +1,21 @@
+<h1>Manage Users</h1>
+
+<?= $this->partial('partials/userForm.phtml', array(
+		'username' => '',
+		'email' => '',
+		'role_id' => '',
+		'aclRoles' => $this->aclRoles))?>
+
+<h2>Browse by Role</h2>
+<ul>
+	<?php foreach ($this->aclRoles as $role): ?>
+		<li><a href="/user/role/<?php echo $role->name; ?>"><?php echo $role->name; ?></a></li>
+	<?php endforeach; ?>
+</ul>
+
+
+<h2>All Users</h2>
+<table class="bordered-table zebra-striped">
+<thead><tr><th>#</th><th>username</th><th>email</th><th></th><th></th></tr></thead>
+<?= $this->partialLoop('partials/userRow.phtml',$this->users)?>
+</table>
