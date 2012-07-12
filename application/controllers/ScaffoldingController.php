@@ -39,6 +39,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @author Alex Oroshchuk (oroshchuk@gmail.com)
  * @copyright 2011 Alex Oroshchuk
  * @version 1.0
+ * @todo fix links in pagination
  */
 
 class ScaffoldingController extends Zend_Controller_Action

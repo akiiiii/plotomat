@@ -73,11 +73,6 @@ class Application_Model_UserService {
 		$row = $this->users->find($id);
 		return $row;
 	}
-	
-	public function LoginUser()
-	{
-		
-	}
 }
 
 ?>

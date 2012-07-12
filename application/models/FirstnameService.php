@@ -13,7 +13,20 @@ class Application_Model_FirstnameService {
      * @var Application_Model_DbTable_DataFirstnamesRank 
      */
     protected $firstnamesRank;
-    private $defaultMinYear = 1890;
+    
+    /**
+     *
+     * @var int
+     * earliest year of firstname data import 
+     */
+    private $minYear = 1890;
+    
+    /**
+     *
+     * @var int
+     * maximum year of firstname data 
+     */
+    private $maxYear = 2011;
 
 
     function __construct() {
@@ -77,17 +90,24 @@ class Application_Model_FirstnameService {
         return $this->firstnames->fetchAll($select);
     }
 
-    public function GetMaxRankYear() {
+    /**
+     *
+     * @return int 
+     */
+    public function GetMaxRankYearInDb() {
         $select = $this->firstnamesRank->select();
         $select->order('jahr DESC');
         $select->limit(1);
 
         $ergRow = $this->firstnamesRank->fetchRow($select);
-        print_r($ergRow);
         if(!empty($ergRow))
             return $ergRow->jahr;
         else
-            return $this->defaultMinYear;
+            return $this->minYear;
+    }
+    
+    public function GetMaxYear() {
+        return $this->maxYear;
     }
     
     public function GetFirstnameByName($name) {
