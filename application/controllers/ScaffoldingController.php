@@ -1,33 +1,34 @@
 <?php
+
 /*
-Copyright (c) 2011, Alex Oroshchuk
-All rights reserved.
+  Copyright (c) 2011, Alex Oroshchuk
+  All rights reserved.
 
-Redistribution and use in source and binary forms, with or without modification,
-are permitted provided that the following conditions are met:
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
 
-    * Redistributions of source code must retain the above copyright notice,
-      this list of conditions and the following disclaimer.
+ * Redistributions of source code must retain the above copyright notice,
+  this list of conditions and the following disclaimer.
 
-    * Redistributions in binary form must reproduce the above copyright notice,
-      this list of conditions and the following disclaimer in the documentation
-      and/or other materials provided with the distribution.
+ * Redistributions in binary form must reproduce the above copyright notice,
+  this list of conditions and the following disclaimer in the documentation
+  and/or other materials provided with the distribution.
 
-    * Neither the name of Zend Technologies USA, Inc. nor the names of its
-      contributors may be used to endorse or promote products derived from this
-      software without specific prior written permission.
+ * Neither the name of Zend Technologies USA, Inc. nor the names of its
+  contributors may be used to endorse or promote products derived from this
+  software without specific prior written permission.
 
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
-ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
-ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
+  ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
+  WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+  DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR CONTRIBUTORS BE LIABLE FOR
+  ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+  (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+  LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON
+  ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+  SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
 
 /**
  * This Zend controller extension class allows you to quickly scaffold
@@ -41,15 +42,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  * @version 1.0
  * @todo fix links in pagination
  */
-
-class ScaffoldingController extends Zend_Controller_Action
-{
-
+class ScaffoldingController extends Zend_Controller_Action {
     /**
      * Controller actions used as CRUD operations.
      */
-    const ACTION_INDEX  = 'index';
-    const ACTION_LIST   = 'list';
+
+    const ACTION_INDEX = 'index';
+    const ACTION_LIST = 'list';
     const ACTION_CREATE = 'create';
     const ACTION_UPDATE = 'update';
     const ACTION_DELETE = 'delete';
@@ -57,32 +56,32 @@ class ScaffoldingController extends Zend_Controller_Action
     /**
      * Create form button definitions.
      */
-    const BUTTON_SAVE       = 'save';
-    const BUTTON_SAVEEDIT   = 'saveedit';
+    const BUTTON_SAVE = 'save';
+    const BUTTON_SAVEEDIT = 'saveedit';
     const BUTTON_SAVECREATE = 'savecreate';
 
     /**
      * Message types.
      */
-    const MSG_OK  = 'OK';
+    const MSG_OK = 'OK';
     const MSG_ERR = 'ERR';
 
     /**
      * Identifier used in view generation.
      */
-    const CSS_ID  = 'zs';
+    const CSS_ID = 'zs';
 
     /**
      * Default number of items in listing per page.
      */
     const ITEMS_PER_PAGE = 10;
-    
+
     /**
      * Create form button default labels.
      */
-    protected $buttonLabels    = array(
-        self::BUTTON_SAVE       => 'Save',
-        self::BUTTON_SAVEEDIT   => 'Save and continue editing',
+    protected $buttonLabels = array(
+        self::BUTTON_SAVE => 'Save',
+        self::BUTTON_SAVEEDIT => 'Save and continue editing',
         self::BUTTON_SAVECREATE => 'Save and create new one'
     );
 
@@ -91,15 +90,15 @@ class ScaffoldingController extends Zend_Controller_Action
      */
     protected $messages = array(
         self::ACTION_CREATE => array(
-            self::MSG_OK  => 'New %s has been created.',
+            self::MSG_OK => 'New %s has been created.',
             self::MSG_ERR => 'Failed to create new %s.'
         ),
         self::ACTION_UPDATE => array(
-            self::MSG_OK  => 'The %s has been updated.',
+            self::MSG_OK => 'The %s has been updated.',
             self::MSG_ERR => 'Failed to update %s.'
         ),
         self::ACTION_DELETE => array(
-            self::MSG_OK  => 'The %s has been deleted.',
+            self::MSG_OK => 'The %s has been deleted.',
             self::MSG_ERR => 'Failed to delete %s.'
         )
     );
@@ -109,25 +108,25 @@ class ScaffoldingController extends Zend_Controller_Action
      * @var Array
      */
     private $options = array(
-        'pkEditable'        => false,
-        'indexAction'       => false,
-        'viewFolder'        => 'scaffolding',
-        'entityTitle'       => 'entity',
-        'createEntityText'  => null,
-        'updateEntityText'  => null,
-        'deleteEntityText'  => null,
-        'readonly'          => false,
-        'disabledActions'   => array(),
-        'editFormButtons'     => array(
+        'pkEditable' => false,
+        'indexAction' => false,
+        'viewFolder' => 'scaffolding',
+        'entityTitle' => 'entity',
+        'createEntityText' => null,
+        'updateEntityText' => null,
+        'deleteEntityText' => null,
+        'readonly' => false,
+        'disabledActions' => array(),
+        'editFormButtons' => array(
             self::BUTTON_SAVE,
             self::BUTTON_SAVEEDIT,
             self::BUTTON_SAVECREATE
         ),
-        'csrfProtected'     => true,
-        'customMessenger'   => false,
-        'translator'        => null,
-        'actionParams'      => null,
-        'editLayout'        => null
+        'csrfProtected' => true,
+        'customMessenger' => false,
+        'translator' => null,
+        'actionParams' => null,
+        'editLayout' => null
     );
 
     /**
@@ -147,6 +146,7 @@ class ScaffoldingController extends Zend_Controller_Action
         ),
         'time' => array('date', 'datetime', 'timestamp')
     );
+
     /**
      * Scaffolding field definitions.
      * @var Array
@@ -165,7 +165,6 @@ class ScaffoldingController extends Zend_Controller_Action
      */
     private $metaData;
 
-    
     /**
      * Initializes scaffolding.
      *
@@ -173,9 +172,8 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $fields field definitions
      * @param Zend_Config|Array $options
      */
-    protected function scaffold($dbSource, $fields = array(), $options = null)
-    {
-    	
+    protected function scaffold($dbSource, $fields = array(), $options = null) {
+
         // Check arguments.
         if (!($dbSource instanceof Zend_Db_Table_Abstract
                 || $dbSource instanceof Zend_Db_Table_Select)) {
@@ -211,27 +209,27 @@ class ScaffoldingController extends Zend_Controller_Action
         }
 
         // Prepare view variables.
-        $this->view->action       = $action;
-        $this->view->module       = $this->getRequest()->getModuleName();
-        $this->view->controller   = $this->getRequest()->getControllerName();
+        $this->view->action = $action;
+        $this->view->module = $this->getRequest()->getModuleName();
+        $this->view->controller = $this->getRequest()->getControllerName();
         $this->view->actionParams = $this->options['actionParams'];
 
         if (!$this->options['customMessenger']) {
-            $this->view->messages   = $this->_helper->getHelper('FlashMessenger')->getMessages();
+            $this->view->messages = $this->_helper->getHelper('FlashMessenger')->getMessages();
         }
 
-        $this->view->entityTitle    = $this->options['entityTitle'] = $this->translate($this->options['entityTitle']);
-        $this->view->createEntityText  = $this->options['createEntityText'];
-        $this->view->updateEntityText  = $this->options['updateEntityText'];
-        $this->view->deleteEntityText  = $this->options['deleteEntityText'];
+        $this->view->entityTitle = $this->options['entityTitle'] = $this->translate($this->options['entityTitle']);
+        $this->view->createEntityText = $this->options['createEntityText'];
+        $this->view->updateEntityText = $this->options['updateEntityText'];
+        $this->view->deleteEntityText = $this->options['deleteEntityText'];
 
         $this->view->headLink()->appendStylesheet($this->view->baseUrl('/css/zstyles.css'), 'screen, projection');
 
         // Do not override view script path if the action requested is not
         // one of the standard scaffolding actions
-        $scaffActions   = array(self::ACTION_LIST, self::ACTION_INDEX,
-                              self::ACTION_CREATE, self::ACTION_UPDATE,
-                              self::ACTION_DELETE);
+        $scaffActions = array(self::ACTION_LIST, self::ACTION_INDEX,
+            self::ACTION_CREATE, self::ACTION_UPDATE,
+            self::ACTION_DELETE);
         $indexAction = false;
         if (!empty($this->options['indexAction'])) {
             $scaffActions[] = $action;
@@ -240,11 +238,11 @@ class ScaffoldingController extends Zend_Controller_Action
         if (in_array($action, $scaffActions)) {
             if ($indexAction) {
                 $this->getHelper('ViewRenderer')
-                     ->setViewScriptPathSpec(sprintf('%s/index.:suffix', $this->options['viewFolder']));
+                        ->setViewScriptPathSpec(sprintf('%s/index.:suffix', $this->options['viewFolder']));
                 $this->indexAction();
             } else {
                 $this->getHelper('ViewRenderer')
-                     ->setViewScriptPathSpec(sprintf('%s/:action.:suffix', $this->options['viewFolder']));
+                        ->setViewScriptPathSpec(sprintf('%s/:action.:suffix', $this->options['viewFolder']));
             }
         }
     }
@@ -254,17 +252,16 @@ class ScaffoldingController extends Zend_Controller_Action
      * like paginator, search form and sortable headers as specified
      * in field definition.
      */
-    public function indexAction()
-    {
-        $fields = $searchFields = $sortingFields  = array();
-        $defSortField   = null;
-        $searchForm     = null;
-        $searchActive   = false;
+    public function indexAction() {
+        $fields = $searchFields = $sortingFields = array();
+        $defSortField = null;
+        $searchForm = null;
+        $searchActive = false;
 
-        $tableInfo      = $this->getMetadata();
-        $pks            = $tableInfo['primary'];
+        $tableInfo = $this->getMetadata();
+        $pks = $tableInfo['primary'];
         $tableRelations = array_keys($tableInfo['referenceMap']);
-        $joinOn         = array();
+        $joinOn = array();
 
         // Use all fields if no field settings were provided.
         if (!count($this->fields)) {
@@ -280,8 +277,8 @@ class ScaffoldingController extends Zend_Controller_Action
         // Process primary/related table fields.
         $defaultOrder = 1;
         foreach ($this->fields as $columnName => $columnDetails) {
-            $tableName      = $tableInfo['name'];
-            $defColumnName  = $columnName;
+            $tableName = $tableInfo['name'];
+            $defColumnName = $columnName;
             $this->fields[$columnName]['order'] = $defaultOrder++;
 
             // Check if the column belongs to a related table.
@@ -291,27 +288,27 @@ class ScaffoldingController extends Zend_Controller_Action
                 $refDisplayField = $fullColumnName[1];
                 // Column is a FK.
                 if (in_array($refName, $tableRelations)) {
-                  $ruleDetails = $tableInfo['referenceMap'][$refName];
-                  // @todo: what if columns are an array?
-                  $mainColumn = $ruleDetails['columns'];
-                  $refColumn = is_array($ruleDetails['refColumns']) ?
-                                array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
+                    $ruleDetails = $tableInfo['referenceMap'][$refName];
+                    // @todo: what if columns are an array?
+                    $mainColumn = $ruleDetails['columns'];
+                    $refColumn = is_array($ruleDetails['refColumns']) ?
+                            array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
 
-                  $relatedModel         = new $ruleDetails['refTableClass']();
-                  $relatedTableMetadata = $relatedModel->info();
-                  $relatedTableName     = $relatedTableMetadata['name'];
+                    $relatedModel = new $ruleDetails['refTableClass']();
+                    $relatedTableMetadata = $relatedModel->info();
+                    $relatedTableName = $relatedTableMetadata['name'];
 
 
-                  $joinOn[$relatedTableName] = "$tableName.$mainColumn = $relatedTableName.$refColumn";
+                    $joinOn[$relatedTableName] = "$tableName.$mainColumn = $relatedTableName.$refColumn";
 
-                  // Change current table and column to be used later.
-                  // Aliases are used to evade same column names from joined tables.
-                  $tableName  = $relatedTableName;
-                  $columnName = array($defColumnName => $refDisplayField);
+                    // Change current table and column to be used later.
+                    // Aliases are used to evade same column names from joined tables.
+                    $tableName = $relatedTableName;
+                    $columnName = array($defColumnName => $refDisplayField);
                 } else {
                     $isDependentTableColumn = false;
                     // Check if column is from a dependent table.
-                    foreach ($tableInfo['dependentTables'] as $depTableClass)  {
+                    foreach ($tableInfo['dependentTables'] as $depTableClass) {
                         $dependentTable = new $depTableClass;
                         if (!$dependentTable instanceof Zend_Db_Table_Abstract) {
                             throw new Zend_Controller_Exception('Zend_Controller_Scaffolding requires a Zend_Db_Table_Abstract as model providing class.');
@@ -338,7 +335,7 @@ class ScaffoldingController extends Zend_Controller_Action
 
                         // Change current table and column to be used later.
                         // Aliases are used to evade same column names from joined tables.
-                        $tableName  = $relatedTableName;
+                        $tableName = $relatedTableName;
                         $columnName = array($defColumnName => $refDisplayField);
 
                         $isDependentTableColumn = true;
@@ -367,11 +364,10 @@ class ScaffoldingController extends Zend_Controller_Action
             }
 
             $this->fields[$defColumnName]['sqlName'] =
-                "$tableName." . (is_array($columnName) ? current($columnName) : $columnName);
+                    "$tableName." . (is_array($columnName) ? current($columnName) : $columnName);
 
             $defSortField = empty($defSortField) ?
-                            (empty($this->fields[$defColumnName]['sortBy']) ? null : $defColumnName)
-                            : $defSortField;
+                    (empty($this->fields[$defColumnName]['sortBy']) ? null : $defColumnName) : $defSortField;
         }
 
         if ($this->dbSource instanceof Zend_Db_Table_Abstract) {
@@ -398,8 +394,8 @@ class ScaffoldingController extends Zend_Controller_Action
             // Create unique search session variable.
             // @todo: test if it is unique in ALL cases
             $nsName = $tableInfo['name'] . '_' . join('_', array_keys($searchFields));
-            $searchParams   = new Zend_Session_Namespace($nsName);
-            $searchForm     = $this->buildSearchForm($searchFields);
+            $searchParams = new Zend_Session_Namespace($nsName);
+            $searchForm = $this->buildSearchForm($searchFields);
 
             if ($this->getRequest()->isPost() && $searchForm->isValid($this->getRequest()->getPost())) {
                 if (isset($_POST['reset'])) {
@@ -407,70 +403,70 @@ class ScaffoldingController extends Zend_Controller_Action
                 } else {
                     $filterFields = $searchForm->getValues();
                 }
-                $searchParams->search   = $filterFields;
+                $searchParams->search = $filterFields;
             } else {
                 $filterFields = isset($searchParams->search) ? $searchParams->search : array();
             }
             $searchForm->populate($filterFields);
 
             foreach ($filterFields as $field => $value) {
-              if ($value || is_numeric($value)) {
-                // Search by date.
-                // Date is a period, need to handle both start and end date.
-                if (strpos($field, self::CSS_ID . '_from')) {
-                    $field = str_replace('_' . self::CSS_ID . '_from', '', $field);
-                    $select->where("{$tableInfo['name']}.$field >= ?", $value);
-                } elseif (strpos($field, self::CSS_ID . '_to')) {
-                    $field = str_replace('_' . self::CSS_ID . '_to', '', $field);
-                    $select->where("{$tableInfo['name']}.$field <= ?", $value);
-                } else {
-                  // Search all other native fields.
-                  if (isset($tableInfo['metadata'][$field])) {
-                      $dataType = strtolower($tableInfo['metadata'][$field]['DATA_TYPE']);
-                      $fieldType = !empty($this->fields[$field]['fieldType']) ? $this->fields[$field]['fieldType'] : '';
-                      $tableName = $tableInfo['name'];
-                  } else {
-                      // Search by related table field.
-                      // Column name was normalized, need to find it.
-                      $fieldDefs = array_keys($this->fields);
-                      $fieldFound = false;
-                      foreach ($fieldDefs as $fieldName) {
-                          if (strpos($fieldName, '.') !== false && str_replace('.', '', $fieldName) == $field) {
-                              $field = $fieldName;
-                              $fieldFound = true;
-                              break;
-                          }
-                      }
+                if ($value || is_numeric($value)) {
+                    // Search by date.
+                    // Date is a period, need to handle both start and end date.
+                    if (strpos($field, self::CSS_ID . '_from')) {
+                        $field = str_replace('_' . self::CSS_ID . '_from', '', $field);
+                        $select->where("{$tableInfo['name']}.$field >= ?", $value);
+                    } elseif (strpos($field, self::CSS_ID . '_to')) {
+                        $field = str_replace('_' . self::CSS_ID . '_to', '', $field);
+                        $select->where("{$tableInfo['name']}.$field <= ?", $value);
+                    } else {
+                        // Search all other native fields.
+                        if (isset($tableInfo['metadata'][$field])) {
+                            $dataType = strtolower($tableInfo['metadata'][$field]['DATA_TYPE']);
+                            $fieldType = !empty($this->fields[$field]['fieldType']) ? $this->fields[$field]['fieldType'] : '';
+                            $tableName = $tableInfo['name'];
+                        } else {
+                            // Search by related table field.
+                            // Column name was normalized, need to find it.
+                            $fieldDefs = array_keys($this->fields);
+                            $fieldFound = false;
+                            foreach ($fieldDefs as $fieldName) {
+                                if (strpos($fieldName, '.') !== false && str_replace('.', '', $fieldName) == $field) {
+                                    $field = $fieldName;
+                                    $fieldFound = true;
+                                    break;
+                                }
+                            }
 
-                      // The submitted form value is not from model, skip it.
-                      if (!$fieldFound) {
-                          continue;
-                      }
+                            // The submitted form value is not from model, skip it.
+                            if (!$fieldFound) {
+                                continue;
+                            }
 
-                      $dataType = $this->fields[$field]['fieldType'];
-                      list($tableName, $field) = explode('.', $this->fields[$field]['sqlName']);
-                  }
+                            $dataType = $this->fields[$field]['fieldType'];
+                            list($tableName, $field) = explode('.', $this->fields[$field]['sqlName']);
+                        }
 
-                  if (in_array($dataType, $this->dataTypes['text']) || $fieldType == 'text') {
-                      $select->where("$tableName.$field LIKE ?", $value);
-                  } else {
-                      $select->where("$tableName.$field = ?", $value);
-                  }
+                        if (in_array($dataType, $this->dataTypes['text']) || $fieldType == 'text') {
+                            $select->where("$tableName.$field LIKE ?", $value);
+                        } else {
+                            $select->where("$tableName.$field = ?", $value);
+                        }
+                    }
+
+                    $searchActive = true;
                 }
-
-                $searchActive = true;
-              }
-          }
+            }
         }
 
         /**
          * Handle sorting by modifying SQL and building header sorting links.
          */
-        $sortField  = $this->_getParam('orderby');
-        $sortMode   = $this->_getParam('mode') == 'desc' ? 'desc' : 'asc';
+        $sortField = $this->_getParam('orderby');
+        $sortMode = $this->_getParam('mode') == 'desc' ? 'desc' : 'asc';
         if (!$sortField && $defSortField) {
-            $sortField  = $defSortField;
-            $sortMode   = $this->fields[$sortField]['sortBy'] == 'desc' ? 'desc' : 'asc';
+            $sortField = $defSortField;
+            $sortMode = $this->fields[$sortField]['sortBy'] == 'desc' ? 'desc' : 'asc';
         }
         if ($sortField) {
             $select->order("{$this->fields[$sortField]['sqlName']} $sortMode");
@@ -484,28 +480,26 @@ class ScaffoldingController extends Zend_Controller_Action
 
         $this->prepareList($select);
 
-        $this->view->searchActive   = $searchActive;
-        $this->view->searchForm     = $searchForm;
-        $this->view->primaryKey     = $pks;
+        $this->view->searchActive = $searchActive;
+        $this->view->searchForm = $searchForm;
+        $this->view->primaryKey = $pks;
 
-        $this->view->canCreate      = !in_array(self::ACTION_CREATE, $this->options['disabledActions']);
-        $this->view->canUpdate      = !in_array(self::ACTION_UPDATE, $this->options['disabledActions']);
-        $this->view->canDelete      = !in_array(self::ACTION_DELETE, $this->options['disabledActions']);
+        $this->view->canCreate = !in_array(self::ACTION_CREATE, $this->options['disabledActions']);
+        $this->view->canUpdate = !in_array(self::ACTION_UPDATE, $this->options['disabledActions']);
+        $this->view->canDelete = !in_array(self::ACTION_DELETE, $this->options['disabledActions']);
     }
 
     /**
      * Alias of index action.
      */
-    public function listAction()
-    {
+    public function listAction() {
         $this->_forward('index');
     }
 
     /**
      * Handle custom Zend_Db_Select-based queries.
      */
-    protected function smartQuery($select, $fields = array(), $options = null)
-    {
+    protected function smartQuery($select, $fields = array(), $options = null) {
         // Check arguments.
         if (!$select instanceof Zend_Db_Select) {
             throw new Zend_Controller_Exception('Custom select method requires an instance of Zend_Db_Select.');
@@ -523,9 +517,9 @@ class ScaffoldingController extends Zend_Controller_Action
         // Do not override view script path if the action requested is not
         // one of the standard scaffolding actions
         $action = $this->getRequest()->getActionName();
-        $scaffActions   = array(self::ACTION_LIST, self::ACTION_INDEX,
-                              self::ACTION_CREATE, self::ACTION_UPDATE,
-                              self::ACTION_DELETE);
+        $scaffActions = array(self::ACTION_LIST, self::ACTION_INDEX,
+            self::ACTION_CREATE, self::ACTION_UPDATE,
+            self::ACTION_DELETE);
         $indexAction = false;
         if (!empty($this->options['indexAction'])) {
             $scaffActions[] = $action;
@@ -534,17 +528,17 @@ class ScaffoldingController extends Zend_Controller_Action
         if (in_array($action, $scaffActions)) {
             if ($indexAction) {
                 $this->getHelper('ViewRenderer')
-                     ->setViewScriptPathSpec(sprintf('%s/index.:suffix', $this->options['viewFolder']));
+                        ->setViewScriptPathSpec(sprintf('%s/index.:suffix', $this->options['viewFolder']));
             } else {
                 $this->getHelper('ViewRenderer')
-                     ->setViewScriptPathSpec(sprintf('%s/:action.:suffix', $this->options['viewFolder']));
+                        ->setViewScriptPathSpec(sprintf('%s/:action.:suffix', $this->options['viewFolder']));
             }
         }
 
-        $searchFields = $sortingFields  = array();
-        $defSortField   = null;
-        $searchForm     = null;
-        $searchActive   = false;
+        $searchFields = $sortingFields = array();
+        $defSortField = null;
+        $searchForm = null;
+        $searchActive = false;
 
         // Process primary/related table fields.
         $defaultOrder = 1;
@@ -553,10 +547,9 @@ class ScaffoldingController extends Zend_Controller_Action
 
             if (strpos($columnName, '.')) {
                 list($tableName, $columnName) = explode('.', $columnName);
-                $this->fields[$defColumnName]['sqlName'] ="$tableName.$columnName";
-            }
-            else {
-                $this->fields[$defColumnName]['sqlName'] ="$columnName";
+                $this->fields[$defColumnName]['sqlName'] = "$tableName.$columnName";
+            } else {
+                $this->fields[$defColumnName]['sqlName'] = "$columnName";
             }
 
             // Prepare search form fields.
@@ -572,8 +565,7 @@ class ScaffoldingController extends Zend_Controller_Action
             $this->fields[$defColumnName]['order'] = $defaultOrder++;
 
             $defSortField = empty($defSortField) ?
-                            (empty($this->fields[$defColumnName]['sortBy']) ? null : $defColumnName)
-                            : $defSortField;
+                    (empty($this->fields[$defColumnName]['sortBy']) ? null : $defColumnName) : $defSortField;
         }
 
         /**
@@ -584,8 +576,8 @@ class ScaffoldingController extends Zend_Controller_Action
             // Create unique search session variable.
             // @todo: test if it is unique in ALL cases
             $nsName = join('_', array_keys($searchFields));
-            $searchParams   = new Zend_Session_Namespace($nsName);
-            $searchForm     = $this->buildQuerySearchForm($searchFields);
+            $searchParams = new Zend_Session_Namespace($nsName);
+            $searchForm = $this->buildQuerySearchForm($searchFields);
 
             if ($this->getRequest()->isPost() && $searchForm->isValid($this->_getAllParams())) {
                 if (isset($_POST['reset'])) {
@@ -593,67 +585,67 @@ class ScaffoldingController extends Zend_Controller_Action
                 } else {
                     $filterFields = $searchForm->getValues();
                 }
-                $searchParams->search   = $filterFields;
+                $searchParams->search = $filterFields;
             } else {
                 $filterFields = isset($searchParams->search) ? $searchParams->search : array();
             }
             $searchForm->populate($filterFields);
 
             foreach ($filterFields as $field => $value) {
-              if ($value || is_numeric($value)) {
-                // Treat date fields specially.
-                $dateFrom = $dateTo = false;
-                if (strpos($field, self::CSS_ID . '_from')) {
-                    $field = str_replace('_' . self::CSS_ID . '_from', '', $field);
-                    $dateFrom = true;
-                } elseif (strpos($field, self::CSS_ID . '_to')) {
-                    $field = str_replace('_' . self::CSS_ID . '_to', '', $field);
-                    $dateTo = true;
-                }
-
-                // Column name was normalized, need to find it.
-                $fieldDefs = array_keys($this->fields);
-                $fieldFound = false;
-                foreach ($fieldDefs as $fieldName) {
-                    if (strpos($fieldName, '.') !== false && str_replace('.', '', $fieldName) == $field) {
-                        $field = $fieldName;
-                        $fieldFound = true;
-                        break;
+                if ($value || is_numeric($value)) {
+                    // Treat date fields specially.
+                    $dateFrom = $dateTo = false;
+                    if (strpos($field, self::CSS_ID . '_from')) {
+                        $field = str_replace('_' . self::CSS_ID . '_from', '', $field);
+                        $dateFrom = true;
+                    } elseif (strpos($field, self::CSS_ID . '_to')) {
+                        $field = str_replace('_' . self::CSS_ID . '_to', '', $field);
+                        $dateTo = true;
                     }
-                }
 
-                // The submitted form value is not from field definitions, skip it.
-                if (!$fieldFound) {
-                    continue;
-                }
-
-                // Date is a period, need to handle both start and end date.
-                if (in_array($this->fields[$field]['dataType'], $this->dataTypes['time'])) {
-                    if (!empty($dateFrom)) {
-                        $select->where("{$this->fields[$field]['sqlName']} >= ?", $value);
+                    // Column name was normalized, need to find it.
+                    $fieldDefs = array_keys($this->fields);
+                    $fieldFound = false;
+                    foreach ($fieldDefs as $fieldName) {
+                        if (strpos($fieldName, '.') !== false && str_replace('.', '', $fieldName) == $field) {
+                            $field = $fieldName;
+                            $fieldFound = true;
+                            break;
+                        }
                     }
-                    if (!empty($dateTo)) {
-                        $select->where("{$this->fields[$field]['sqlName']} <= ?", $value);
-                    }
-                } elseif (in_array($this->fields[$field]['dataType'], $this->dataTypes['text'])) {
-                    $select->where("{$this->fields[$field]['sqlName']} LIKE ?", $value);
-                } else {
-                    $select->where("{$this->fields[$field]['sqlName']} = ?", $value);
-                }
 
-                $searchActive = true;
-              }
-          }
+                    // The submitted form value is not from field definitions, skip it.
+                    if (!$fieldFound) {
+                        continue;
+                    }
+
+                    // Date is a period, need to handle both start and end date.
+                    if (in_array($this->fields[$field]['dataType'], $this->dataTypes['time'])) {
+                        if (!empty($dateFrom)) {
+                            $select->where("{$this->fields[$field]['sqlName']} >= ?", $value);
+                        }
+                        if (!empty($dateTo)) {
+                            $select->where("{$this->fields[$field]['sqlName']} <= ?", $value);
+                        }
+                    } elseif (in_array($this->fields[$field]['dataType'], $this->dataTypes['text'])) {
+                        $select->where("{$this->fields[$field]['sqlName']} LIKE ?", $value);
+                    } else {
+                        $select->where("{$this->fields[$field]['sqlName']} = ?", $value);
+                    }
+
+                    $searchActive = true;
+                }
+            }
         }
 
         /**
          * Handle sorting by modifying SQL and building header sorting links.
          */
-        $sortField  = $this->_getParam('orderby');
-        $sortMode   = $this->_getParam('mode') == 'desc' ? 'desc' : 'asc';
+        $sortField = $this->_getParam('orderby');
+        $sortMode = $this->_getParam('mode') == 'desc' ? 'desc' : 'asc';
         if (!$sortField && $defSortField) {
-            $sortField  = $defSortField;
-            $sortMode   = $this->fields[$sortField]['sortBy'] == 'desc' ? 'desc' : 'asc';
+            $sortField = $defSortField;
+            $sortMode = $this->fields[$sortField]['sortBy'] == 'desc' ? 'desc' : 'asc';
         }
         if ($sortField) {
             $select->order("{$this->fields[$sortField]['sqlName']} $sortMode");
@@ -667,17 +659,17 @@ class ScaffoldingController extends Zend_Controller_Action
 
         $this->prepareList($select);
 
-        $this->view->searchActive   = $searchActive;
-        $this->view->searchForm     = $searchForm;
+        $this->view->searchActive = $searchActive;
+        $this->view->searchForm = $searchForm;
 
-        $this->view->canCreate      = !in_array(self::ACTION_CREATE, $this->options['disabledActions']);
-        $this->view->canUpdate      = !in_array(self::ACTION_UPDATE, $this->options['disabledActions']);
-        $this->view->canDelete      = !in_array(self::ACTION_DELETE, $this->options['disabledActions']);
+        $this->view->canCreate = !in_array(self::ACTION_CREATE, $this->options['disabledActions']);
+        $this->view->canUpdate = !in_array(self::ACTION_UPDATE, $this->options['disabledActions']);
+        $this->view->canDelete = !in_array(self::ACTION_DELETE, $this->options['disabledActions']);
 
         // Prepare other view variables.
-        $this->view->action       = $this->getRequest()->getActionName();
-        $this->view->module       = $this->getRequest()->getModuleName();
-        $this->view->controller   = $this->getRequest()->getControllerName();
+        $this->view->action = $this->getRequest()->getActionName();
+        $this->view->module = $this->getRequest()->getModuleName();
+        $this->view->controller = $this->getRequest()->getControllerName();
         $this->view->actionParams = $this->options['actionParams'];
 
         $this->view->headLink()->appendStylesheet($this->view->baseUrl('/css/zstyles.css'), 'screen, projection');
@@ -688,10 +680,9 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $fields list of searchable fields.
      * @return Zend_Form instance of form object
      */
-    private function buildQuerySearchForm(array $fields)
-    {
-        $datePickerFields   = array();
-        $form               = array();
+    private function buildQuerySearchForm(array $fields) {
+        $datePickerFields = array();
+        $form = array();
 
         foreach ($fields as $columnName => $columnDetails) {
             if (empty($columnDetails['dataType'])) {
@@ -728,38 +719,38 @@ class ScaffoldingController extends Zend_Controller_Action
                 );
             } elseif (in_array($dataType, $this->dataTypes['time'])) {
                 $form['elements'][$columnName . '_' . self::CSS_ID . '_from'] =
-                    array(
-                        'text', array(
-                            'label'         => $this->getColumnTitle($defColumnName) . ' from',
-                            'class'         => self::CSS_ID . '-search-' . $fieldType,
-                        )
-                    );
+                        array(
+                            'text', array(
+                                'label' => $this->getColumnTitle($defColumnName) . ' from',
+                                'class' => self::CSS_ID . '-search-' . $fieldType,
+                            )
+                );
 
                 $form['elements'][$columnName . '_' . self::CSS_ID . '_to'] =
-                    array(
-                        'text', array(
-                            'label' => 'to',
-                            'class' => self::CSS_ID . '-search-' . $fieldType,
-                        )
-                    );
+                        array(
+                            'text', array(
+                                'label' => 'to',
+                                'class' => self::CSS_ID . '-search-' . $fieldType,
+                            )
+                );
 
                 if ($fieldType == 'jsPicker') {
                     $datePickerFields[] = $columnName . '_' . self::CSS_ID . '_from';
                     $datePickerFields[] = $columnName . '_' . self::CSS_ID . '_to';
                 }
             } elseif (in_array($dataType, $this->dataTypes['text'])) {
-                    $length     = isset($columnDetails['size']) ? $columnDetails['size'] : '';
-                    $maxlength  = isset($columnDetails['maxlength']) ? $columnDetails['maxlength'] : '';
+                $length = isset($columnDetails['size']) ? $columnDetails['size'] : '';
+                $maxlength = isset($columnDetails['maxlength']) ? $columnDetails['maxlength'] : '';
 
-                    $form['elements'][$columnName] = array(
-                        'text',
-                        array(
-                            'class'     => self::CSS_ID . '-search-text',
-                            'label'     => $this->getColumnTitle($defColumnName),
-                            'size'      => $length,
-                            'maxlength' => $maxlength,
-                        )
-                    );
+                $form['elements'][$columnName] = array(
+                    'text',
+                    array(
+                        'class' => self::CSS_ID . '-search-text',
+                        'label' => $this->getColumnTitle($defColumnName),
+                        'size' => $length,
+                        'maxlength' => $maxlength,
+                    )
+                );
             } elseif (in_array($dataType, $this->dataTypes['numeric'])) {
                 if ($fieldType == 'checkbox') {
                     // By default integer values are displayed as text fields
@@ -789,7 +780,7 @@ class ScaffoldingController extends Zend_Controller_Action
         $form['elements']['submit'] = array(
             'submit',
             array(
-                'ignore'   => true,
+                'ignore' => true,
                 'class' => self::CSS_ID . '-btn-search',
                 'label' => 'Search',
             )
@@ -798,7 +789,7 @@ class ScaffoldingController extends Zend_Controller_Action
         $form['elements']['reset'] = array(
             'submit',
             array(
-                'ignore'   => true,
+                'ignore' => true,
                 'class' => self::CSS_ID . '-btn-reset',
                 'label' => 'Reset',
                 'onclick' => 'ssfResetForm(this.form);'
@@ -819,8 +810,7 @@ class ScaffoldingController extends Zend_Controller_Action
     /**
      * Create entity handler.
      */
-    public function createAction()
-    {
+    public function createAction() {
         $info = $this->getMetadata();
 
         if (count($info['primary']) == 0) {
@@ -840,11 +830,11 @@ class ScaffoldingController extends Zend_Controller_Action
                     // Save many-to-many field to the corresponding table
                     if (count($relData)) {
                         foreach ($relData as $m2mData) {
-                            $m2mTable   = $m2mData[0];
-                            $m2mValues  = $m2mData[1];
+                            $m2mTable = $m2mData[0];
+                            $m2mValues = $m2mData[1];
 
                             if (count($m2mValues)) {
-                                $m2mInfo    = $m2mTable->info();
+                                $m2mInfo = $m2mTable->info();
                                 $tableClass = get_class($this->dbSource);
                                 foreach ($m2mInfo['referenceMap'] as $rule => $ruleDetails) {
                                     if ($ruleDetails['refTableClass'] == $tableClass) {
@@ -870,31 +860,29 @@ class ScaffoldingController extends Zend_Controller_Action
 
                     if ($this->afterCreate($form, $insertId)) {
                         if (isset($_POST[self::BUTTON_SAVE])) {
-                        	//SANDY
+                            //SANDY
                             //$redirect = "{$this->view->module}/{$this->view->controller}/index";
-                            $redirect = $this->view->url(array(	'module' => $this->view->module,
-                            									'controller' => $this->view->controller,
-                            									'action' => 'index'));
+                            $redirect = $this->view->url(array('module' => $this->view->module,
+                                'controller' => $this->view->controller,
+                                'action' => 'index'));
                         } elseif (isset($_POST[self::BUTTON_SAVEEDIT])) {
-                        	//SANDY
+                            //SANDY
                             //$redirect = "{$this->view->module}/{$this->view->controller}/update/id/$insertId";
-                        	$redirect = $this->view->url(array(	'module' => $this->view->module,
-							                        			'controller' => $this->view->controller,
-                            									'action' => 'update',
-                            									'id' => $insertId));
-
+                            $redirect = $this->view->url(array('module' => $this->view->module,
+                                'controller' => $this->view->controller,
+                                'action' => 'update',
+                                'id' => $insertId));
                         } elseif (isset($_POST[self::BUTTON_SAVECREATE])) {
-                        	//SANDY
+                            //SANDY
                             //$redirect = "{$this->view->module}/{$this->view->controller}/create";
-                        	$redirect = $this->view->url(array(	'module' => $this->view->module,
-							                        			'controller' => $this->view->controller,
-							                        			'action' => 'create'));
+                            $redirect = $this->view->url(array('module' => $this->view->module,
+                                'controller' => $this->view->controller,
+                                'action' => 'create'));
                         }
 
                         $this->_redirect($redirect);
                     }
-                }
-                catch (Zend_Db_Exception $e) {
+                } catch (Zend_Db_Exception $e) {
                     Zend_Db_Table::getDefaultAdapter()->rollBack();
                     //SANDY
                     //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_CREATE, self::MSG_ERR));
@@ -904,7 +892,7 @@ class ScaffoldingController extends Zend_Controller_Action
             }
         }
 
-        $this->view->form           = $form;
+        $this->view->form = $form;
         if (isset($this->options['editLayout'])) {
             $this->_helper->layout->setLayout($this->options['editLayout']);
         }
@@ -913,8 +901,7 @@ class ScaffoldingController extends Zend_Controller_Action
     /**
      * Entity deletion handler.
      */
-    public function deleteAction()
-    {
+    public function deleteAction() {
 
         $params = $this->_getAllParams();
         $info = $this->getMetadata();
@@ -946,46 +933,44 @@ class ScaffoldingController extends Zend_Controller_Action
                 //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
                 $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
                 $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-                
+
                 if ($this->afterDelete($originalRow)) {
-                	//SANDY
+                    //SANDY
                     //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-            		$this->_redirect($this->view->url(array(	'module' => $this->view->module,
-							                					'controller' => $this->view->controller,
-							                					'action' => 'index')));
+                    $this->_redirect($this->view->url(array('module' => $this->view->module,
+                                'controller' => $this->view->controller,
+                                'action' => 'index')));
                 }
-            }
-            else {
-            	//SANDY
+            } else {
+                //SANDY
                 //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_ERR));
-            	$flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-            	$flashMessenger->setNamespace('error')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_ERR));
-            	
-            	//SANDY
+                $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
+                $flashMessenger->setNamespace('error')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_ERR));
+
+                //SANDY
                 //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-           		$this->_redirect($this->view->url(array(	'module' => $this->view->module,
-							                					'controller' => $this->view->controller,
-							                					'action' => 'index')));
+                $this->_redirect($this->view->url(array('module' => $this->view->module,
+                            'controller' => $this->view->controller,
+                            'action' => 'index')));
             }
         } catch (Zend_Db_Exception $e) {
-        	//SANDY
+            //SANDY
             //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-        	$flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-        	$flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-        	
-        	//SANDY
+            $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
+            $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
+
+            //SANDY
             //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-           	$this->_redirect($this->view->url(array(	'module' => $this->view->module,
-							                			'controller' => $this->view->controller,
-							                			'action' => 'index')));
+            $this->_redirect($this->view->url(array('module' => $this->view->module,
+                        'controller' => $this->view->controller,
+                        'action' => 'index')));
         }
     }
 
     /**
      * Entity update handler.
      */
-    public function updateAction()
-    {
+    public function updateAction() {
         $info = $this->getMetadata();
 
         if (count($info['primary']) == 0) {
@@ -995,7 +980,7 @@ class ScaffoldingController extends Zend_Controller_Action
         // Support compound keys
         $primaryKey = array();
         $params = $this->_getAllParams();
-        foreach($params AS $k => $v) {
+        foreach ($params AS $k => $v) {
             if (in_array($k, $info['primary'])) {
                 $primaryKey["$k = ?"] = $v;
             }
@@ -1028,10 +1013,10 @@ class ScaffoldingController extends Zend_Controller_Action
                         // Save many-to-many field to the corresponding table
                         if (count($relData)) {
                             foreach ($relData as $m2mData) {
-                                $m2mTable   = $m2mData[0];
-                                $m2mValues  = is_array($m2mData[1]) ? $m2mData[1] : array();
+                                $m2mTable = $m2mData[0];
+                                $m2mValues = is_array($m2mData[1]) ? $m2mData[1] : array();
 
-                                $m2mInfo    = $m2mTable->info();
+                                $m2mInfo = $m2mTable->info();
                                 $tableClass = get_class($this->dbSource);
                                 foreach ($m2mInfo['referenceMap'] as $rule => $ruleDetails) {
                                     if ($ruleDetails['refTableClass'] == $tableClass) {
@@ -1055,11 +1040,11 @@ class ScaffoldingController extends Zend_Controller_Action
                         $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_UPDATE, self::MSG_OK));
 
                         if ($this->afterUpdate($form)) {
-                        	//SANDY
+                            //SANDY
                             //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-           					$this->_redirect($this->view->url(array(	'module' => $this->view->module,
-							                							'controller' => $this->view->controller,
-							                							'action' => 'index')));
+                            $this->_redirect($this->view->url(array('module' => $this->view->module,
+                                        'controller' => $this->view->controller,
+                                        'action' => 'index')));
                         }
                     } catch (Zend_Db_Exception $e) {
                         Zend_Db_Table::getDefaultAdapter()->rollBack();
@@ -1086,37 +1071,37 @@ class ScaffoldingController extends Zend_Controller_Action
             }
 
             // Load many-to-many field values
-            if(!empty($this->fields)) {
-	            foreach ($this->fields as $field => $fieldDetails) {
-	                if (isset($fieldDetails['manyToManyTable'])) {
-	                    $m2mTable = $fieldDetails['manyToManyTable'];
-	                    $m2mInfo = $m2mTable->info();
-	
-	                    $tableClass = get_class($this->dbSource);
-	                    foreach ($m2mInfo['referenceMap'] as $rule => $ruleDetails) {
-	                        if ($ruleDetails['refTableClass'] == $tableClass) {
-	                            $selfRef = $ruleDetails['columns'];
-	                        } else {
-	                            $relatedRef = $ruleDetails['columns'];
-	                        }
-	                    }
-	
-	                    $m2mValues = $m2mTable->select()
-	                                          ->from($m2mTable, $relatedRef)
-	                                          ->where("$selfRef = ?", $primaryKey)
-	                                          ->query(Zend_Db::FETCH_ASSOC)->fetchAll();
-	
-	                    $multiOptions = array();
-	                    foreach ($m2mValues as $_value) {
-	                        $multiOptions[] = $_value[$relatedRef];
-	                    }
-	
-	                    // Column name must be normalized
-	                    // (Zend_Form_Element::filterName does it anyway).
-	                    $field = str_replace('.', '', $field);
-	                    $entity[$field] = $multiOptions;
-	                }
-	            }
+            if (!empty($this->fields)) {
+                foreach ($this->fields as $field => $fieldDetails) {
+                    if (isset($fieldDetails['manyToManyTable'])) {
+                        $m2mTable = $fieldDetails['manyToManyTable'];
+                        $m2mInfo = $m2mTable->info();
+
+                        $tableClass = get_class($this->dbSource);
+                        foreach ($m2mInfo['referenceMap'] as $rule => $ruleDetails) {
+                            if ($ruleDetails['refTableClass'] == $tableClass) {
+                                $selfRef = $ruleDetails['columns'];
+                            } else {
+                                $relatedRef = $ruleDetails['columns'];
+                            }
+                        }
+
+                        $m2mValues = $m2mTable->select()
+                                        ->from($m2mTable, $relatedRef)
+                                        ->where("$selfRef = ?", $primaryKey)
+                                        ->query(Zend_Db::FETCH_ASSOC)->fetchAll();
+
+                        $multiOptions = array();
+                        foreach ($m2mValues as $_value) {
+                            $multiOptions[] = $_value[$relatedRef];
+                        }
+
+                        // Column name must be normalized
+                        // (Zend_Form_Element::filterName does it anyway).
+                        $field = str_replace('.', '', $field);
+                        $entity[$field] = $multiOptions;
+                    }
+                }
             }
 
             $form->setDefaults($entity);
@@ -1128,8 +1113,7 @@ class ScaffoldingController extends Zend_Controller_Action
         }
     }
 
-    private function getActionMessage($action, $msgType)
-    {
+    private function getActionMessage($action, $msgType) {
         return sprintf($this->translate($this->messages[$action][$msgType]), $this->options['entityTitle']);
     }
 
@@ -1140,15 +1124,14 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $entityData currently editable entity data
      * @return Zend_Form
      */
-    private function buildEditForm(array $entityData = array())
-    {
-        $info       = $this->getMetadata();
-        $metadata   = $info['metadata'];
+    private function buildEditForm(array $entityData = array()) {
+        $info = $this->getMetadata();
+        $metadata = $info['metadata'];
         $tableClass = get_class($this->dbSource);
-        $action     = $this->getRequest()->getActionName();
-        $form       = array();
-        $rteFields  = $datePickerFields = array();
-        $handledRefs  = array();
+        $action = $this->getRequest()->getActionName();
+        $form = array();
+        $rteFields = $datePickerFields = array();
+        $handledRefs = array();
 
         // Look through native table columns.
         foreach ($metadata as $columnName => $columnDetails) {
@@ -1165,8 +1148,8 @@ class ScaffoldingController extends Zend_Controller_Action
 
             // Skip the field?
             if (!empty($this->fields[$columnName]['hide']) && ($this->fields[$columnName]['hide'] === true
-                 || $this->fields[$columnName]['hide'] == 'edit')) {
-                 continue;
+                    || $this->fields[$columnName]['hide'] == 'edit')) {
+                continue;
             }
 
             // Is the field mandatory?
@@ -1196,7 +1179,7 @@ class ScaffoldingController extends Zend_Controller_Action
                 if (!empty($info['referenceMap'][$refName])) {
                     $ruleDetails = $info['referenceMap'][$refName];
                     $refColumn = is_array($ruleDetails['refColumns']) ?
-                                    array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
+                            array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
 
                     $options = array();
                     // Is value required?
@@ -1214,15 +1197,14 @@ class ScaffoldingController extends Zend_Controller_Action
 
                     $form['elements'][$columnName] = array(
                         'select', array(
-                            'multiOptions'  => $options,
-                            'label'         => $this->getColumnTitle($columnName),
-                            'description'   => $this->getColumnDescription($columnName),
-                            'required'      => $required,
-                            'value'         => $defaultValue,
+                            'multiOptions' => $options,
+                            'label' => $this->getColumnTitle($columnName),
+                            'description' => $this->getColumnDescription($columnName),
+                            'required' => $required,
+                            'value' => $defaultValue,
                         )
                     );
-                }
-                else {
+                } else {
                     throw new Zend_Controller_Exception("No references are defined for '$displayField'.");
                 }
 
@@ -1231,15 +1213,12 @@ class ScaffoldingController extends Zend_Controller_Action
             }
 
             $elementOptions = array(
-                'label'         => $this->getColumnTitle($columnName),
-                'description'   => $this->getColumnDescription($columnName),
-                'required'      => $required,
-                'value'         => $defaultValue,
-                'validators'    => isset($this->fields[$columnName]['validators'])
-                                        ? $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData)
-                                        : array(),
-                'filters'       => isset($this->fields[$columnName]['filters'])
-                                        ? $this->fields[$columnName]['filters'] : array(),
+                'label' => $this->getColumnTitle($columnName),
+                'description' => $this->getColumnDescription($columnName),
+                'required' => $required,
+                'value' => $defaultValue,
+                'validators' => isset($this->fields[$columnName]['validators']) ? $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData) : array(),
+                'filters' => isset($this->fields[$columnName]['filters']) ? $this->fields[$columnName]['filters'] : array(),
             );
 
             // Build enum column as select or multicheckbox.
@@ -1249,23 +1228,23 @@ class ScaffoldingController extends Zend_Controller_Action
                 $dataType = 'options';
             } elseif (preg_match('/^enum/i', $columnDetails['DATA_TYPE'])) {
                 $enumDefinition = $columnDetails['DATA_TYPE'];
-                $dataType       = 'enum';
+                $dataType = 'enum';
             } else {
                 $dataType = strtolower($columnDetails['DATA_TYPE']);
             }
 
-            $textFieldOptions   = array();
-            $textFieldType      = null;
+            $textFieldOptions = array();
+            $textFieldType = null;
 
             if (!empty($this->fields[$columnName]['fieldType'])) {
                 switch ($this->fields[$columnName]['fieldType']) {
                     case 'textarea':
-                        $textFieldType  = 'textarea';
+                        $textFieldType = 'textarea';
                         break;
 
                     case 'richtextarea':
-                        $textFieldType  = 'textarea';
-                        $rteFields[]    = $columnName;
+                        $textFieldType = 'textarea';
+                        $rteFields[] = $columnName;
                         break;
 
                     case 'text':
@@ -1323,7 +1302,7 @@ class ScaffoldingController extends Zend_Controller_Action
 
                 $form['elements'][$columnName] = array(
                     $elementType,
-                    array_merge(array('multiOptions'  => $options), $elementOptions)
+                    array_merge(array('multiOptions' => $options), $elementOptions)
                 );
             } elseif (in_array($dataType, $this->dataTypes['numeric'])) {
                 // Generate fields for numerics.
@@ -1357,8 +1336,7 @@ class ScaffoldingController extends Zend_Controller_Action
                     'text',
                     $elementOptions
                 );
-            }
-            else {
+            } else {
                 throw new Zend_Controller_Exception("Unsupported data type '$dataType' encountered, scaffolding is not possible.");
             }
 
@@ -1372,89 +1350,88 @@ class ScaffoldingController extends Zend_Controller_Action
         /**
          * Look for additional field definitions (not from current model).
          */
-        if(!empty($this->fields)) {
-	        foreach ($this->fields as $columnName => $columnDetails) {
-	
-	            if (in_array($columnName, $handledRefs)) {
-	                continue;
-	            }
-	
-	            $fullColumnName = explode('.', $columnName);
-	            if (count($fullColumnName) == 2) {
-	                $refName = $fullColumnName[0];
-	                $refDisplayField = $fullColumnName[1];
-	                foreach ($info['dependentTables'] as $depTableClass)  {
-	                    $dependentTable = new $depTableClass;
-	                    if (!$dependentTable instanceof Zend_Db_Table_Abstract) {
-	                        throw new Zend_Controller_Exception('Zend_Controller_Scaffolding requires a Zend_Db_Table_Abstract as model providing class.');
-	                    }
-	
-	                    $references = $dependentTable->info(Zend_Db_Table::REFERENCE_MAP);
-	                    // Reference with such name may not be defined...
-	                    if (!isset($references[$refName])) {
-	                        continue;
-	                    }
-	                    // For now, skip back-references (reference to the current entity table).
-	                    // @todo: would it be nice to update dependent table columns?
-	                    elseif ($references[$refName]['refTableClass'] == $tableClass) {
-	                        continue;
-	                    }
-	                    // All is fine, this is a true n-n table.
-	                    else {
-	                        $reference = $references[$refName];
-	                    }
-	
-	                    $optionsTable = new $reference['refTableClass'];
-	                    // Auto-detect PK based on metadata
-	                    if (!isset($reference['refColumns'])) {
-	                        $optionsTableInfo = $optionsTable->info();
-	                        $reference['refColumns'] = array_shift($optionsTableInfo['primary']);
-	                    }
-	
-	                    // Value required?
-	                    $required = isset($columnDetails['required']) && $columnDetails['required'] ? true : false;
-	
-	                    $options = array();
-	                    foreach($optionsTable->fetchAll()->toArray() AS $k => $v) {
-	                        $key = $v[$reference['refColumns']];
-	                        if (!isset($options[$key])) {
-	                            $options[$key] = $v[$refDisplayField];
-	                        }
-	                    }
-	
-	                    if (!empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'multicheckbox') {
-	                        $elementType = 'MultiCheckbox';
-	                    } else {
-	                        $elementType = 'Multiselect';
-	                    }
-	
-	                    // Column name must be normalized
-	                    // (Zend_Form_Element::filterName does it anyway).
-	                    $formColumnName = str_replace('.', '', $columnName);
-	                    $form['elements'][$formColumnName] = array(
-	                        $elementType, array(
-	                            'multiOptions' => $options,
-	                            'label' => $this->getColumnTitle($columnName),
-	                            'description'   => $this->getColumnDescription($columnName),
-	                            'required'  => $required,
-	                            'validators'    => isset($this->fields[$columnName]['validators']) ?
-	                                               $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData)
-	                                               : array(),
-	                        )
-	                    );
-	
-	                    // Save manyToMany table information.
-	                    $this->fields[$columnName]['manyToManyTable'] = $dependentTable;
-	                    break;
-	                }
-	            }
-	
-	            // Save custom attributes
-	            if (isset($this->fields[$columnName]['attribs'])
-	                    && is_array($this->fields[$columnName]['attribs'])) {
-	                $form['elements'][$columnName][1] = array_merge($form['elements'][$columnName][1], $this->fields[$columnName]['attribs']);
-	            }
-	        }
+        if (!empty($this->fields)) {
+            foreach ($this->fields as $columnName => $columnDetails) {
+
+                if (in_array($columnName, $handledRefs)) {
+                    continue;
+                }
+
+                $fullColumnName = explode('.', $columnName);
+                if (count($fullColumnName) == 2) {
+                    $refName = $fullColumnName[0];
+                    $refDisplayField = $fullColumnName[1];
+                    foreach ($info['dependentTables'] as $depTableClass) {
+                        $dependentTable = new $depTableClass;
+                        if (!$dependentTable instanceof Zend_Db_Table_Abstract) {
+                            throw new Zend_Controller_Exception('Zend_Controller_Scaffolding requires a Zend_Db_Table_Abstract as model providing class.');
+                        }
+
+                        $references = $dependentTable->info(Zend_Db_Table::REFERENCE_MAP);
+                        // Reference with such name may not be defined...
+                        if (!isset($references[$refName])) {
+                            continue;
+                        }
+                        // For now, skip back-references (reference to the current entity table).
+                        // @todo: would it be nice to update dependent table columns?
+                        elseif ($references[$refName]['refTableClass'] == $tableClass) {
+                            continue;
+                        }
+                        // All is fine, this is a true n-n table.
+                        else {
+                            $reference = $references[$refName];
+                        }
+
+                        $optionsTable = new $reference['refTableClass'];
+                        // Auto-detect PK based on metadata
+                        if (!isset($reference['refColumns'])) {
+                            $optionsTableInfo = $optionsTable->info();
+                            $reference['refColumns'] = array_shift($optionsTableInfo['primary']);
+                        }
+
+                        // Value required?
+                        $required = isset($columnDetails['required']) && $columnDetails['required'] ? true : false;
+
+                        $options = array();
+                        foreach ($optionsTable->fetchAll()->toArray() AS $k => $v) {
+                            $key = $v[$reference['refColumns']];
+                            if (!isset($options[$key])) {
+                                $options[$key] = $v[$refDisplayField];
+                            }
+                        }
+
+                        if (!empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'multicheckbox') {
+                            $elementType = 'MultiCheckbox';
+                        } else {
+                            $elementType = 'Multiselect';
+                        }
+
+                        // Column name must be normalized
+                        // (Zend_Form_Element::filterName does it anyway).
+                        $formColumnName = str_replace('.', '', $columnName);
+                        $form['elements'][$formColumnName] = array(
+                            $elementType, array(
+                                'multiOptions' => $options,
+                                'label' => $this->getColumnTitle($columnName),
+                                'description' => $this->getColumnDescription($columnName),
+                                'required' => $required,
+                                'validators' => isset($this->fields[$columnName]['validators']) ?
+                                        $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData) : array(),
+                            )
+                        );
+
+                        // Save manyToMany table information.
+                        $this->fields[$columnName]['manyToManyTable'] = $dependentTable;
+                        break;
+                    }
+                }
+
+                // Save custom attributes
+                if (isset($this->fields[$columnName]['attribs'])
+                        && is_array($this->fields[$columnName]['attribs'])) {
+                    $form['elements'][$columnName][1] = array_merge($form['elements'][$columnName][1], $this->fields[$columnName]['attribs']);
+                }
+            }
         }
 
         // Cross Site Request Forgery protection
@@ -1477,7 +1454,7 @@ class ScaffoldingController extends Zend_Controller_Action
             $form['elements'][self::BUTTON_SAVE] = array(
                 'submit',
                 array(
-                    'label' => $this->buttonLabels[ self::BUTTON_SAVE],
+                    'label' => $this->buttonLabels[self::BUTTON_SAVE],
                     'class' => self::CSS_ID . '-' . self::BUTTON_SAVE
                 ),
             );
@@ -1504,14 +1481,13 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $fields list of searchable fields.
      * @return Zend_Form instance of form object
      */
-    private function buildSearchForm(array $fields)
-    {
-        $info               = $this->getMetadata();
-        $metadata           = $info['metadata'];
-        $tableRelations     = array_keys($info['referenceMap']);
+    private function buildSearchForm(array $fields) {
+        $info = $this->getMetadata();
+        $metadata = $info['metadata'];
+        $tableRelations = array_keys($info['referenceMap']);
 
-        $datePickerFields   = array();
-        $form               = array();
+        $datePickerFields = array();
+        $form = array();
 
         foreach ($fields as $columnName => $columnDetails) {
             $defColumnName = $columnName;
@@ -1531,9 +1507,9 @@ class ScaffoldingController extends Zend_Controller_Action
                         $ruleDetails = $info['referenceMap'][$fullColumnName[0]];
                         // @todo: what if columns are an array?
                         $refColumn = is_array($ruleDetails['refColumns']) ?
-                                      array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
+                                array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
 
-                        $relatedModel         = new $ruleDetails['refTableClass'];
+                        $relatedModel = new $ruleDetails['refTableClass'];
                         $relatedTableInfo = $relatedModel->info();
                         $relatedTableMetadata = $relatedTableInfo['metadata'];
 
@@ -1554,7 +1530,7 @@ class ScaffoldingController extends Zend_Controller_Action
             $set = false;
             if (isset($metadata[$columnName]) && preg_match('/^enum/i', $metadata[$columnName]['DATA_TYPE'])
                     || (isset($columnDetails['searchOptions'])
-                            && is_array($columnDetails['searchOptions']) && $set = true)) {
+                    && is_array($columnDetails['searchOptions']) && $set = true)) {
                 $options = array();
                 // Try to use the specified options
                 if ($set) {
@@ -1586,40 +1562,39 @@ class ScaffoldingController extends Zend_Controller_Action
                 );
             } elseif (in_array($dataType, $this->dataTypes['time'])) {
                 $form['elements'][$columnName . '_' . self::CSS_ID . '_from'] =
-                    array(
-                        'text', array(
-                            'label' => $this->getColumnTitle($defColumnName) . ' from',
-                            'class' => self::CSS_ID . '-search-' . $dataType . '-' . $fieldType,
-                        )
-                    );
+                        array(
+                            'text', array(
+                                'label' => $this->getColumnTitle($defColumnName) . ' from',
+                                'class' => self::CSS_ID . '-search-' . $dataType . '-' . $fieldType,
+                            )
+                );
 
                 $form['elements'][$columnName . '_' . self::CSS_ID . '_to'] =
-                    array(
-                        'text', array(
-                            'label' => 'to',
-                            'class' => self::CSS_ID . '-search-' . $dataType . '-' . $fieldType,
-                        )
-                    );
+                        array(
+                            'text', array(
+                                'label' => 'to',
+                                'class' => self::CSS_ID . '-search-' . $dataType . '-' . $fieldType,
+                            )
+                );
 
                 if ($fieldType == 'jsPicker') {
                     $datePickerFields[] = $columnName . '_' . self::CSS_ID . '_from';
                     $datePickerFields[] = $columnName . '_' . self::CSS_ID . '_to';
                 }
             } elseif (in_array($dataType, $this->dataTypes['text'])) {
-                    $length     = isset($columnDetails['size']) ? $columnDetails['size'] : '';
-                    $maxlength  = isset($columnDetails['maxlength']) ? $columnDetails['maxlength'] :
-                                      isset($metadata[$columnName]['LENGTH'])
-                                          ? $metadata[$columnName]['LENGTH'] : '';
+                $length = isset($columnDetails['size']) ? $columnDetails['size'] : '';
+                $maxlength = isset($columnDetails['maxlength']) ? $columnDetails['maxlength'] :
+                        isset($metadata[$columnName]['LENGTH']) ? $metadata[$columnName]['LENGTH'] : '';
 
-                    $form['elements'][$columnName] = array(
-                        'text',
-                        array(
-                            'class'     => self::CSS_ID . '-search-text',
-                            'label'     => $this->getColumnTitle($defColumnName),
-                            'size'      => $length,
-                            'maxlength' => $maxlength,
-                        )
-                    );
+                $form['elements'][$columnName] = array(
+                    'text',
+                    array(
+                        'class' => self::CSS_ID . '-search-text',
+                        'label' => $this->getColumnTitle($defColumnName),
+                        'size' => $length,
+                        'maxlength' => $maxlength,
+                    )
+                );
             } elseif (in_array($dataType, $this->dataTypes['numeric'])) {
                 // Specially handle the column if it is a foreign key
                 // and build necessary select/multicheckbox field.
@@ -1628,7 +1603,7 @@ class ScaffoldingController extends Zend_Controller_Action
                     if (!empty($info['referenceMap'][$refName])) {
                         $ruleDetails = $info['referenceMap'][$refName];
                         $refColumn = is_array($ruleDetails['refColumns']) ?
-                                        array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
+                                array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
 
                         $options = array();
                         $options[''] = '';
@@ -1643,25 +1618,22 @@ class ScaffoldingController extends Zend_Controller_Action
 
                         $form['elements'][$columnName] = array(
                             'select', array(
-                                'multiOptions'  => $options,
-                                'label'         => $this->getColumnTitle($columnName),
-                                'class'         => self::CSS_ID . '-search-select',
+                                'multiOptions' => $options,
+                                'label' => $this->getColumnTitle($columnName),
+                                'class' => self::CSS_ID . '-search-select',
                             )
                         );
-                    }
-                    else {
+                    } else {
                         throw new Zend_Controller_Exception("No references are defined for '$displayField'.");
                     }
-                }
-                else {
+                } else {
                     $form['elements'][$columnName] = array(
-                            !empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'checkbox'
-                            ? 'checkbox' : 'text',
-                            array(
-                                'class' => self::CSS_ID . '-search-radio',
-                                'label' => $this->getColumnTitle($columnName),
-                            )
-                        );
+                        !empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'checkbox' ? 'checkbox' : 'text',
+                        array(
+                            'class' => self::CSS_ID . '-search-radio',
+                            'label' => $this->getColumnTitle($columnName),
+                        )
+                    );
                 }
             } else {
                 throw new Zend_Controller_Exception("Fields of type $dataType are not searchable.");
@@ -1683,7 +1655,7 @@ class ScaffoldingController extends Zend_Controller_Action
         $form['elements']['submit'] = array(
             'submit',
             array(
-                'ignore'   => true,
+                'ignore' => true,
                 'class' => self::CSS_ID . '-btn-search',
                 'label' => 'Search',
             )
@@ -1692,7 +1664,7 @@ class ScaffoldingController extends Zend_Controller_Action
         $form['elements']['reset'] = array(
             'submit',
             array(
-                'ignore'   => true,
+                'ignore' => true,
                 'class' => self::CSS_ID . '-btn-reset',
                 'label' => 'Reset',
                 'onclick' => 'ssfResetForm(this.form);'
@@ -1716,8 +1688,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param Array $values form values
      * @return Array $values filtered values
      */
-    private function getDbValues(array $values)
-    {
+    private function getDbValues(array $values) {
         if (count($values) > 0) {
             if (isset($values['csrf_hash'])) {
                 unset($values['csrf_hash']);
@@ -1735,10 +1706,9 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param Array $values initial values
      * @return Array $values modified values
      */
-    private function getDbValuesInsert(array $values)
-    {
+    private function getDbValuesInsert(array $values) {
         $values = $this->getDbValues($values);
-        $relData= array();
+        $relData = array();
 
         if (count($values) > 0) {
             $info = $this->getMetadata();
@@ -1784,13 +1754,12 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param Array $values new values
      * @return Array modified values in form array($values => Array, $where => String)
      */
-    private function getDbValuesUpdate(array $entity, array $values)
-    {
+    private function getDbValuesUpdate(array $entity, array $values) {
         $values = $this->getDbValues($values);
-        $info   = $this->getMetadata();
-        $where  = array();
+        $info = $this->getMetadata();
+        $where = array();
         $update = array();
-        $relData= array();
+        $relData = array();
 
         foreach ($values AS $field => $value) {
             // PK must be used in where clause.
@@ -1802,7 +1771,7 @@ class ScaffoldingController extends Zend_Controller_Action
             if (in_array($field, $info['cols'])) {
                 // Normal table field has to be directly saved
                 if (!(isset($this->fields[$field]['required']) && $this->fields[$field]['required'] == 'onCreate' && empty($value)))
-                    // Apply field modifier if any
+                // Apply field modifier if any
                     if (isset($this->fields[$field]['saveModifier'])) {
                         $update[$field] = call_user_func($this->fields[$field]['saveModifier'], $value);
                     } else {
@@ -1836,8 +1805,8 @@ class ScaffoldingController extends Zend_Controller_Action
         $header = array();
         foreach ($this->fields as $columnName => $columnDetails) {
             if (!empty($columnDetails['hide']) && ($columnDetails['hide'] === true
-                 || $columnDetails['hide'] == 'list')) {
-                 continue;
+                    || $columnDetails['hide'] == 'list')) {
+                continue;
             }
 
             $name = $this->translate($this->getColumnTitle($columnName));
@@ -1847,20 +1816,20 @@ class ScaffoldingController extends Zend_Controller_Action
                 $currentMode = ($sortField == $columnName ? $sortMode : '');
 
                 if ($currentMode == 'asc') {
-                    $counterOrder   = 'desc';
-                    $class          = self::CSS_ID . '-sort-desc';
+                    $counterOrder = 'desc';
+                    $class = self::CSS_ID . '-sort-desc';
                 } elseif ($currentMode == 'desc') {
-                    $counterOrder   = 'asc';
-                    $class          = self::CSS_ID . '-sort-asc';
+                    $counterOrder = 'asc';
+                    $class = self::CSS_ID . '-sort-asc';
                 } else {
-                    $counterOrder   = 'asc';
-                    $class          = '';
+                    $counterOrder = 'asc';
+                    $class = '';
                 }
 
                 $sortParams = array(
-                    'orderby'   => $columnName,
-                    'mode'      => $counterOrder
-                    );
+                    'orderby' => $columnName,
+                    'mode' => $counterOrder
+                );
 
                 $href = $this->view->url($sortParams, 'default');
                 $header[$columnName] = "<a class=\"" . self::CSS_ID . "-sort-link $class\" href=\"$href\">$name</a>";
@@ -1872,14 +1841,14 @@ class ScaffoldingController extends Zend_Controller_Action
         $this->view->headers = $header;
         return $header;
     }
+
     /**
      * Prepares the list of records. Optionally applies field listing modifiers.
      *
      * @param Array $entries entries to be displayed
      * @return Array $list resulting list of entries
      */
-    private function prepareList($select)
-    {
+    private function prepareList($select) {
         // Enable paginator if needed
         if (!empty($this->options['pagination'])) {
             $pageNumber = $this->_getParam('page');
@@ -1887,7 +1856,7 @@ class ScaffoldingController extends Zend_Controller_Action
 
             $paginator->setCurrentPageNumber($pageNumber);
             $itemPerPage = isset($this->options['pagination']['itemsPerPage']) ?
-                            $this->options['pagination']['itemsPerPage'] : self::ITEMS_PER_PAGE;
+                    $this->options['pagination']['itemsPerPage'] : self::ITEMS_PER_PAGE;
             $paginator->setItemCountPerPage($itemPerPage);
 
             $items = $paginator->getItemsByPage($pageNumber);
@@ -1910,7 +1879,7 @@ class ScaffoldingController extends Zend_Controller_Action
         foreach ($items as $item) {
             // Convert to array if object.
             if (is_object($item)) {
-                $item = (array)$item;
+                $item = (array) $item;
             }
 
             foreach ($this->fields as $columnName => $columnDetails) {
@@ -1930,7 +1899,7 @@ class ScaffoldingController extends Zend_Controller_Action
                 }
 
                 // null values may be returned.
-                $value  = !empty($item[$column]) ? $item[$column] : null;
+                $value = !empty($item[$column]) ? $item[$column] : null;
 
                 // Call list view modifier for specific column if set
                 if (isset($columnDetails['listModifier'])) {
@@ -1963,8 +1932,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * Retrieve model table metadata.
      * @return Array
      */
-    private function getMetadata()
-    {
+    private function getMetadata() {
         if (is_null($this->metaData)) {
             if ($this->dbSource instanceof Zend_Db_Table_Abstract) {
                 $this->metaData = $this->dbSource->info();
@@ -1990,9 +1958,8 @@ class ScaffoldingController extends Zend_Controller_Action
                 $alias = array_search($fieldName, $field);
                 $field = $fieldName;
                 $result[] = "$table.$field AS $alias";
-            }
-            else {
-              $result[] = "$table.$field";
+            } else {
+                $result[] = "$table.$field";
             }
         }
         return $result;
@@ -2003,8 +1970,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param String $columnFieldName
      * @return String $columnLabel
      */
-    private function getColumnTitle($columnName)
-    {
+    private function getColumnTitle($columnName) {
         if (isset($this->fields[$columnName]['title'])) {
             return $this->fields[$columnName]['title'];
         } else {
@@ -2017,8 +1983,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param String $columnFieldName
      * @return String $columnLabel
      */
-    private function getColumnDescription($columnName)
-    {
+    private function getColumnDescription($columnName) {
         if (isset($this->fields[$columnName]['description'])) {
             return $this->fields[$columnName]['description'];
         }
@@ -2032,8 +1997,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $validators list of custom validators
      * @param array $dbRecord entity record
      */
-    private function prepareValidators($field, $validators, $dbRecord)
-    {
+    private function prepareValidators($field, $validators, $dbRecord) {
         if (is_array($validators)) {
             foreach ($validators as $i => &$validator) {
                 // Validation options provided
@@ -2059,8 +2023,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $form form configuration array
      * @return Zend_Form instance of Zend_Form
      */
-    protected function prepareEditForm(array &$form)
-    {
+    protected function prepareEditForm(array &$form) {
         $formObject = new Zend_Form($form);
 
         // Add required flag
@@ -2088,8 +2051,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $form form configuration array
      * @return Zend_Form instance of Zend_Form
      */
-    protected function prepareSearchForm(array &$form)
-    {
+    protected function prepareSearchForm(array &$form) {
         $formObject = new Zend_Form($form);
 
         foreach ($formObject->getElements() as $element) {
@@ -2110,8 +2072,8 @@ class ScaffoldingController extends Zend_Controller_Action
      *
      * @param array $fields fields that use date picking
      */
-    protected function loadDatePicker(array $fields)
-    {
+    protected function loadDatePicker(array $fields) {
+        
     }
 
     /**
@@ -2120,8 +2082,8 @@ class ScaffoldingController extends Zend_Controller_Action
      *
      * @param array $fields fields that use rich text editor
      */
-    protected function loadRichTextEditor(array $fields)
-    {
+    protected function loadRichTextEditor(array $fields) {
+        
     }
 
     /**
@@ -2130,8 +2092,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param Zend_Form $form submitted form object
      * @return true if creation must happen or false otherwise
      */
-    protected function beforeCreate(Zend_Form $form, array &$formValues)
-    {
+    protected function beforeCreate(Zend_Form $form, array &$formValues) {
         return true;
     }
 
@@ -2143,8 +2104,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @return true if automatic redirect must happen and false if user will
      *          redirect manually
      */
-    protected function afterCreate(Zend_Form $form, $insertId)
-    {
+    protected function afterCreate(Zend_Form $form, $insertId) {
         return true;
     }
 
@@ -2155,8 +2115,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param array $formValues values as returned by getDbValuesUpdate method
      * @return true if update must happen or false otherwise
      */
-    protected function beforeUpdate(Zend_Form $form, array &$formValues)
-    {
+    protected function beforeUpdate(Zend_Form $form, array &$formValues) {
         return true;
     }
 
@@ -2167,8 +2126,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @return true if automatic redirect must happen and false if user will
      *          redirect manually
      */
-    protected function afterUpdate(Zend_Form $form)
-    {
+    protected function afterUpdate(Zend_Form $form) {
         return true;
     }
 
@@ -2178,8 +2136,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @param Zend_Db_Table_Row_Abstract $entity record to be deleted
      * @return true if deletion must happen or false otherwise
      */
-    protected function beforeDelete(Zend_Db_Table_Row_Abstract $entity)
-    {
+    protected function beforeDelete(Zend_Db_Table_Row_Abstract $entity) {
         return true;
     }
 
@@ -2190,8 +2147,7 @@ class ScaffoldingController extends Zend_Controller_Action
      * @return true if automatic redirect must happen and false if user will
      *          redirect manually
      */
-    protected function afterDelete(Zend_Db_Table_Row_Abstract $entity)
-    {
+    protected function afterDelete(Zend_Db_Table_Row_Abstract $entity) {
         return true;
     }
 
@@ -2247,6 +2203,7 @@ class ScaffoldingController extends Zend_Controller_Action
         }
         return true;
     }
+
 }
 
 ?>

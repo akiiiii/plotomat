@@ -93,7 +93,7 @@ class UserController extends Zend_Controller_Action {
 
     public function loginAction() {
 
-        $form = new Application_Model_FormLogin(array('action' => '/user/login'));
+        $form = new Application_Model_Form_Login(array('action' => '/user/login'));
 
         if ($this->getRequest()->isPost()) {
             $form_data = $this->getRequest()->getPost();
@@ -122,7 +122,7 @@ class UserController extends Zend_Controller_Action {
     }
 
     public function addAction() {
-        $form = new Application_Model_FormLogin(array('action' => '/user/add'));
+        $form = new Application_Model_Form_Login(array('action' => '/user/add'));
         $this->view->form = $form;
     }
 
