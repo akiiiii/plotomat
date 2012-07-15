@@ -29,6 +29,7 @@ class ToolsController extends Zend_Controller_Action {
 
         if ($this->firstnameService->GetMaxYear() >= 2011) {
             //nothing to scrape
+            $this->view->mainText = 'Nothing to scrape';
         } else {
             require_once("Parser/simple_html_dom.php");
             $filter = new Zend_Filter_StripTags(); // filter for cleaning data

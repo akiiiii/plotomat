@@ -219,6 +219,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 			$login,
 			$logout,
 
+                        /*
 			array(	'type' => 'Zend_Navigation_Page_MVC',
 					'label'  => 'User-Admin',
 					'route' => 'default',
@@ -228,7 +229,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 					'resource' => 'user',
 					'privilege' => 'index',
 			),
-			/*
+
 			array(
 					'type' => 'Zend_Navigation_Page_MVC',
 					'label'  => 'Role-Admin',
@@ -260,7 +261,20 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 					'action' => 'index',
 					'resource' => 'news',
 			),
-			/*
+			array(
+					'type' => 'Zend_Navigation_Page_Uri',
+					'label' => 'Tools', 
+					'uri' => '#',
+					'pages' =>	array(
+							array(  'type' => 'Zend_Navigation_Page_MVC',
+                                                                'label' =>  'Scraper',
+                                                                'route' => 'default',
+                                                                'module' => 'default',
+                                                                'controller' => 'tools',
+                                                                'action' => 'scrape',
+							)),
+			),
+                    
 			array(
 					'type' => 'Zend_Navigation_Page_Uri',
 					'label' => 'Administration', 
@@ -296,16 +310,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap
 									'privilege' => 'update',
 							)),
 			),
-			*/
 
-		    array(
-		    	'type' => 'Zend_Navigation_Page_MVC',
-		        'label' =>  'Scraper',
-		    	'route' => 'default',
-		    	'module' => 'default',
-		    	'controller' => 'tools',
-		        'action' => 'scrape',
-		    ),
 		
 		    array(
 		    	'type' => 'Zend_Navigation_Page_MVC',
