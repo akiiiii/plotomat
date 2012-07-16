@@ -50,9 +50,11 @@ class Application_Model_Form_Login extends Zend_Form {
                 ->removeDecorator('htmlTag')
                 ->setRequired(true);
 
-        $submit = new Zend_Form_Element_Submit('submit');
+        $submit = new Zend_Form_Element_Button('submit');
         $submit->setLabel('Login')->removeDecorator('DtDdWrapper');
-
+        $submit->setAttribs(array('class' => 'btn',
+                                    'type' => 'submit'));
+        
         $this->setDecorators(
                 array(
                     array('ViewScript',
