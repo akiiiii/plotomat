@@ -40,7 +40,7 @@
  * @author Alex Oroshchuk (oroshchuk@gmail.com)
  * @copyright 2011 Alex Oroshchuk
  * @version 1.0
- * @todo fix links in pagination
+ * @todo sandyL => fix links in pagination, format elements according to twitter bootstrap rules
  */
 class ScaffoldingController extends Zend_Controller_Action {
     /**

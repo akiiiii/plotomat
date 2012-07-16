@@ -1,5 +1,5 @@
 <?php
-$html = "";
+$html = array();
 
 $iterator = new RecursiveIteratorIterator(
                 $this->container, RecursiveIteratorIterator::SELF_FIRST);
@@ -14,22 +14,18 @@ else
     $role = $registry->config->defaults->auth_default_role;
 
 $prevDepth = - 1;
-//$iterator->setMaxDepth(0);
 
 foreach ($iterator as $page) {
-
-    if ($acl->isAllowed($role, $page->_resource, $page->_privilege)) {
+    
+    $access = 'denied';
+    if ($acl->isAllowed($role, $page->_resource, $page->_privilege) || 
+            $page->_resource == '' && $page->_privilege == '') {
         $access = 'allowed';
-    } elseif ($page->_resource == '' && $page->_privilege == '') {
-        $access = 'allowed';
-    } else {
-        $access = 'denied';
     }
-
-    //echo $role. " => ". $page->_resource . " => " . $page->_privilege . " / " . $access . "<br />";
-
+    
     if ($page->isVisible() && $access == 'allowed') {
         $toggle = '';
+        $caret = '';
         $depth = $iterator->getDepth();
         $isActive = $page->isActive(true);
         if ($depth > $prevDepth) {
@@ -48,17 +44,18 @@ foreach ($iterator as $page) {
             $html [] = '    </li>' . "\n";
         }
         if ($page->haspages()) {
-            $liClass = $isActive ? ' class="active dropdown" data-dropdown="dropdown"' : ' class="dropdown" data-dropdown="dropdown"';
-            $toggle = ' class="dropdown-toggle"';
+            $liClass = $isActive ? ' class="active dropdown"' : ' class="dropdown"';
+            $toggle = ' class="dropdown-toggle" data-toggle="dropdown"';
+            $caret = '<b class="caret"></b>';
         } else {
             $liClass = $isActive ? ' class="active"' : '';
         }
         $html [] = '<li' . $liClass . '>' . "\n";
-        $html [] = '<a ' . $toggle . ' href="' . $page->getHref() . '">' . $page->getLabel() . '</a>' . "\n";
+        $html [] = '<a ' . $toggle . ' href="' . $page->getHref() . '">' . $page->getLabel() . $caret . '</a>' . "\n";
         $prevDepth = $depth;
     }
 }
-//0
+
 for ($i = $depth; $i > -1; $i--) {
     $html [] = '</li>' . "\n";
     $html [] = '</ul>' . "\n";

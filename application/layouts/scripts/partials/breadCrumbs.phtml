@@ -1,0 +1,29 @@
+<!--
+<ul class="breadcrumb">
+    <li><a href="#">Home</a> <span class="divider">/</span></li>
+    <li><a href="#">Library</a> <span class="divider">/</span></li>
+    <li class="active">Data</li>
+</ul>
+-->
+<?php
+$html = array();
+$divider = '<span class="divider">/</span>';
+
+$pageArr = array_map(create_function('$a', 'return $a->getLabel();'),$this->pages);
+$counter = count($pageArr);
+foreach($this->pages as $page) {
+    /// last element
+    if($counter<=1) {
+        $divider = '';
+    }
+    $html [] = '<li><a href="' . $page->getHref() . '">' . $page->getLabel() . $divider . '</a> </li>' . "\n";
+    $counter--;
+}
+
+if (!empty($html)) {
+    echo '<ul class="breadcrumb">' . "\n";
+    echo join(PHP_EOL, $html);
+    echo '</ul>' . "\n";
+}
+
+?>

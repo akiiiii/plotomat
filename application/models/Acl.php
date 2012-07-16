@@ -7,7 +7,6 @@ class Application_Model_Acl extends Zend_Acl {
 
     public function __construct() {
 
-        // erstmal - Anfang
         $dbAdapter = Zend_Db_Table::getDefaultAdapter();
         $authAdapter = new Zend_Auth_Adapter_DbTable($dbAdapter);
 
@@ -34,7 +33,7 @@ class Application_Model_Acl extends Zend_Acl {
 
         $this->allow('guest', 'user', 'login');
         $this->allow('guest', 'contact', 'index');
-        $this->allow('guest', 'tools', 'scrape');
+        $this->allow('guest', 'tools', 'scan');
         $this->allow('guest', 'index', 'index');
 
         //$this->deny('superadmin', 'role');

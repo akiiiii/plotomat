@@ -25,11 +25,11 @@ class ToolsController extends Zend_Controller_Action {
     /**
      * scannt Vornamensdaten und legt sie in der DB ab 
      */
-    public function scrapeAction() {
+    public function scanAction() {
 
         if ($this->firstnameService->GetMaxYear() >= 2011) {
             //nothing to scrape
-            $this->view->mainText = 'Nothing to scrape';
+            $this->view->mainText = 'Nothing to scan';
         } else {
             require_once("Parser/simple_html_dom.php");
             $filter = new Zend_Filter_StripTags(); // filter for cleaning data

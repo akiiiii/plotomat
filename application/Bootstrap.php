@@ -21,21 +21,43 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         $layout = $this->getResource('layout');
         $view = $layout->getView();
+        
+        /* using view helpers to set meta data*/
         $view->doctype('XHTML1_STRICT');
         $view->setEncoding('UTF-8');
+        
         $view->headMeta()->appendHttpEquiv('Content-Type', 'text/html;charset=utf-8');
-        $view->headLink()->appendStylesheet('/styles/bootstrap.min.css');
+        $view->headMeta()->setName('viewport', 'width=device-width, initial-scale=1.0');
+        $view->headMeta()->setName('description', '');
+        $view->headMeta()->setName('author', '');
+
+                
+        $view->headLink()->appendStylesheet('/ext/bootstrap/css/bootstrap.min.css');
+        $view->headLink()->appendStylesheet('/ext/bootstrap/css/bootstrap-responsive.min.css');
+        
         $view->headStyle()->appendStyle('body {
-									        padding-top: 60px;
-									      }
-										.container-fluid > .content {
-																	    margin-left: 0;
-																	}');
+                                            padding-top: 60px;
+                                            padding-bottom: 40px;
+                                        }
+                                        .sidebar-nav {
+                                            padding: 9px 0;
+                                        }');
 
-        $view->headScript()->appendFile('js/jquery-1.7.1.min.js');
-        $view->headScript()->appendFile('js/bootstrap-alerts.js');
-        $view->headScript()->appendFile('js/bootstrap-dropdown.js');
+        $view->inlineScript()->appendFile('/js/jquery-1.7.1.min.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-alert.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-dropdown.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-collapse.js');
+        /*
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-transition.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-tab.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-tooltip.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-popover.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-button.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-carousel.js');
+        $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-typeahead.js');
+         */
 
+        
         //// view helper path! 
         $view->addHelperPath(APPLICATION_PATH . '/views/helpers', 'My_View_Helper'); // Specify view helper and its path
     }
@@ -202,11 +224,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 'uri' => '#',
                 'pages' => array(
                     array('type' => 'Zend_Navigation_Page_MVC',
-                        'label' => 'Scraper',
+                        'label' => 'Scanner',
                         'route' => 'default',
                         'module' => 'default',
                         'controller' => 'tools',
-                        'action' => 'scrape',
+                        'action' => 'scan',
                 )),
             ),
             array(
