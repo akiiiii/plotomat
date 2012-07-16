@@ -1,5 +1,8 @@
 <?php
 
+/**
+ *@todo rewrite this to use Database Tables 
+ */
 class Application_Model_Acl extends Zend_Acl {
 
     public function __construct() {
@@ -9,6 +12,8 @@ class Application_Model_Acl extends Zend_Acl {
         $authAdapter = new Zend_Auth_Adapter_DbTable($dbAdapter);
 
         // RESSOURCES
+        $this->add(new Zend_Acl_Resource('administration')); /// resource for administration anchor
+        
         $this->add(new Zend_Acl_Resource('user'));
         $this->add(new Zend_Acl_Resource('contact'));
         $this->add(new Zend_Acl_Resource('tools'));

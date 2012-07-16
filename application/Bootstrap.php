@@ -9,17 +9,12 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         return $config; /// <= nicht sicher was das hier soll, war jedoch im BeispielCode vorhanden <= vielleicht erklärt's irgendwann mal irgendwas
     }
 
-    /*
-      protected function _initMongo() {
+    protected function _initMongo() {
 
-      /// kann man auch weglassen - der connected dann automatisch
-      $master = new Shanty_Mongo_Connection('localhost');
-      Shanty_Mongo::addMaster($master);
-
-      //$slave = new Shanty_Mongo_Connection('mongodb://repo:hasiba3r@ds029287.mongolab.com:29287/stats_replica');
-      //Shanty_Mongo::addSlave($slave);
-      }
-     */
+        /// kann man auch weglassen - der connected dann automatisch
+        $master = new Shanty_Mongo_Connection('localhost');
+        Shanty_Mongo::addMaster($master);
+    }
 
     protected function _initMyViewHelpers() {
         $this->bootstrap('layout'); // make sure layout is bootstrapped!
@@ -104,28 +99,19 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     /*
      * http://stackoverflow.com/questions/7029307/no-default-adapters-in-zend-unless-i-add-them-explicitly-is-this-a-feature-or-a
      */
-    /*
-      protected function _initDbUtf8()
-      {
-      $this->bootstrap('db'); // make sure db is bootstrapped already!
 
-      //Zend_Debug::dump(Zend_Db_Table::getDefaultAdapter());
-
-      // force UTF-8 connection
-      $statement = new Zend_Db_Statement_Pdo(
-      Zend_Db_Table::getDefaultAdapter(),
-      "SET NAMES 'utf8'"
-      );
-      $statement->execute();
-      }
+    /**
+     * for possibility for using multible db-connections 
      */
-
     public function _initDbRegistry() {
         $this->bootstrap('multidb');
         $multidb = $this->getPluginResource('multidb');
         Zend_Registry::set('db_local', $multidb->getDb('local'));
     }
 
+    /**
+     * authentication via frontcontroller plugin 
+     */
     protected function _initPluginAuth() {
         $this->bootstrap('multidb'); // make sure db is bootstrapped already!
         $this->bootstrap('frontController'); // make sure frontcontroller is bootstrapped!
@@ -159,6 +145,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
     protected function _initMyNavigation() {
 
         $this->bootstrap('layout'); // make sure layout is bootstrapped!
+        $this->bootstrap('frontController'); // make sure frontcontroller is bootstrapped! => ACL
 
         $layout = $this->getResource('layout');
         $view = $layout->getView();
@@ -189,48 +176,16 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                     'route' => 'default',
                     'module' => 'default',
                     'controller' => 'user',
-                    'visible' => false, /// default => nicht sichtbar
+                    'visible' => false, /// default => not visible
                     'action' => 'logout',
                 ));
-
-
+       
+        /* create navigation container */
         $container = new Zend_Navigation();
         $pages = array(
             $home,
             $login,
             $logout,
-            /*
-              array(	'type' => 'Zend_Navigation_Page_MVC',
-              'label'  => 'User-Admin',
-              'route' => 'default',
-              'module' => 'default',
-              'controller' => 'user',
-              'action' => 'index',
-              'resource' => 'user',
-              'privilege' => 'index',
-              ),
-
-              array(
-              'type' => 'Zend_Navigation_Page_MVC',
-              'label'  => 'Role-Admin',
-              'route' => 'roleUpdate',
-              'module' => 'default',
-              'controller' => 'role',
-              'action' => 'update',
-              'resource' => 'role',
-              'privilege' => 'update',
-              ),
-              array(
-              'type' => 'Zend_Navigation_Page_MVC',
-              'label'  => 'Resource-Admin',
-              'route' => 'resourceUpdate',
-              'module' => 'default',
-              'controller' => 'resource',
-              'action' => 'update',
-              'resource' => 'resource',
-              'privilege' => 'update',
-              ),
-             */
 
             array(
                 'type' => 'Zend_Navigation_Page_MVC',
@@ -257,6 +212,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
             array(
                 'type' => 'Zend_Navigation_Page_Uri',
                 'label' => 'Administration',
+                'resource' => 'administration',
                 'uri' => '#',
                 'pages' => array(
                     array('type' => 'Zend_Navigation_Page_MVC',
@@ -298,16 +254,11 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                 'action' => 'index',
             )
         );
-
+       
         // add multiple pages
         $container->addPages($pages);
         $view->navigation($container);
-
-        /*
-          $acl = Zend_Acl::getInstance();
-          $view->navigation()->setAcl($acl);
-         */
-
+        
         $view->homeLink = $home->getHref();
     }
 

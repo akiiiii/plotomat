@@ -32,7 +32,7 @@
         </div>
     </div>
     <div class="container-fluid">
-        <div><?php echo $this->navigation()->breadcrumbs()->render(); ?></div>
+        <div><?php echo $this->navigation()->breadcrumbs()->setMinDepth(0)->render(); ?></div>
         <div class="content">
 
             <?php
