@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * @todo: bring in line with other method of form management under models/form/ 
+ */
 class Application_Form_Resource extends Zend_Form {
 
     protected $formState; /// create-mode or update-mode?
