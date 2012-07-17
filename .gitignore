@@ -13,6 +13,5 @@ nbproject/
 .idea
 
 #sensitive zend framework files
-.htaccess
 application.ini
 
