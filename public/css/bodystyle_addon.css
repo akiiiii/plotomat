@@ -1,0 +1,14 @@
+/* 
+    Document   : bodystyle_addon
+    Created on : 17.07.2012, 09:05:23
+    Author     : Sandy
+    Description:
+        overcome shortcomings of not being able to order headstyle and headstylelink
+*/
+body {
+    padding-top: 60px;
+    padding-bottom: 40px;
+}
+.sidebar-nav {
+    padding: 9px 0;
+}

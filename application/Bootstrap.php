@@ -33,15 +33,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
                 
         $view->headLink()->appendStylesheet('/ext/bootstrap/css/bootstrap.min.css');
+        $view->headLink()->appendStylesheet('/css/bodystyle_addon.css');
+        /* responsive has to be at bottom to overwrite padding-top */
         $view->headLink()->appendStylesheet('/ext/bootstrap/css/bootstrap-responsive.min.css');
         
-        $view->headStyle()->appendStyle('body {
-                                            padding-top: 60px;
-                                            padding-bottom: 40px;
-                                        }
-                                        .sidebar-nav {
-                                            padding: 9px 0;
-                                        }');
 
         $view->inlineScript()->appendFile('/js/jquery-1.7.1.min.js');
         $view->inlineScript()->appendFile('/ext/bootstrap/js/bootstrap-alert.js');
