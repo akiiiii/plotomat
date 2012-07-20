@@ -19,5 +19,7 @@ class Application_Model_DbTable_Users extends Zend_Db_Table_Abstract {
             'refColumns' => array('id')
         )
     );
+    
+    protected $_dependentTables = array('Users');
 
 }

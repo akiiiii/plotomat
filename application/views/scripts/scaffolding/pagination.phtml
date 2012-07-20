@@ -1,30 +1,47 @@
 <?php if ($this->pageCount > 1): ?>
     <div class="pagination">
         <ul>
-        <!-- First page link -->
-        <?php if ($this->current != $this->first): ?>
-            <li><a href="<?php echo $this->url(array('page' => $this->first)) ?>" class="first">&lt;&lt;</a></li>
-        <?php endif; ?>
-        <!-- Previous page link -->
-        <?php if (isset($this->previous)): ?>
-            <li><a href="<?php echo $this->url(array('page' => $this->previous)) ?>" class="previous">&lt;</a></li>
-        <?php endif; ?>
-        <!-- Numbered page links -->
-        <?php foreach ($this->pagesInRange as $page): ?>
-            <?php if ($page != $this->current): ?>
-                <li><a href="<?php echo $this->url(array('page' => $page)) ?>"><?php echo $page; ?></a></li>
-            <?php else: ?>
-                <li class="active"><a href="#"><?php echo $page; ?></a></li>
+            <!-- First page link -->
+            <?php if ($this->current != $this->first): ?>
+                <li><a href="<?php
+        echo $this->url(array('module' => $this->module,
+            'controller' => $this->controller,
+            'action' => $this->action,
+            'page' => $this->first), $this->routeName);
+                ?>" class="first">&lt;&lt;</a></li>
             <?php endif; ?>
-        <?php endforeach; ?>
-        <!-- Next page link -->
-        <?php if (isset($this->next)): ?>
-            <li><a href="<?php echo $this->url(array('page' => $this->next)) ?>" class="next">&gt;</a></li>
-        <?php endif; ?>
-        <!-- Last page link -->
-        <?php if ($this->current != $this->last): ?>
-        <li><a href="<?php echo $this->url(array('page' => $this->last)) ?>" class="last">&gt;&gt;</a></li>
-        <?php endif; ?>
+            <!-- Previous page link -->
+            <?php if (isset($this->previous)): ?>
+                <li><a href="<?php echo $this->url(array('module' => $this->module,
+            'controller' => $this->controller,
+            'action' => $this->action,
+            'page' => $this->previous), $this->routeName) ?>" class="previous">&lt;</a></li>
+            <?php endif; ?>
+            <!-- Numbered page links -->
+            <?php foreach ($this->pagesInRange as $page): ?>
+                <?php if ($page != $this->current): ?>
+                    <li><a href="<?php echo $this->url(array('module' => $this->module,
+            'controller' => $this->controller,
+            'action' => $this->action,
+            'page' => $page), $this->routeName) ?>"><?php echo $page; ?></a></li>
+                <?php else: ?>
+                    <li class="active"><a href="#"><?php echo $page; ?></a></li>
+                <?php endif; ?>
+            <?php endforeach; ?>
+            <!-- Next page link -->
+            <?php if (isset($this->next)): ?>
+                <li><a href="<?php echo $this->url(array('module' => $this->module,
+            'controller' => $this->controller,
+            'action' => $this->action,
+            'page' => $this->next), $this->routeName) ?>" class="next">&gt;</a></li>
+            <?php endif; ?>
+            <!-- Last page link -->
+            <?php if ($this->current != $this->last): ?>
+                <li><a href="<?php echo $this->url(array('module' => $this->module,
+            'controller' => $this->controller,
+            'action' => $this->action,
+            'page' => $this->last), $this->routeName) ?>" class="last">&gt;&gt;</a></li>
+    <?php endif; ?>
         </ul>
     </div>
 <?php endif; ?>
