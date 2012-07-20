@@ -40,9 +40,8 @@
  * @author Alex Oroshchuk (oroshchuk@gmail.com)
  * @copyright 2011 Alex Oroshchuk
  * @version 1.0
- * @todo sandyL => fix links in pagination, format elements according to twitter bootstrap rules
  */
-class ScaffoldingController extends Zend_Controller_Action {
+class Lex0r_Scaffolding extends Zend_Controller_Action {
     /**
      * Controller actions used as CRUD operations.
      */
@@ -104,6 +103,12 @@ class ScaffoldingController extends Zend_Controller_Action {
     );
 
     /**
+     * Last error message.
+     * @var String
+     */
+    protected $lastError;
+
+    /**
      * Default scaffolding options.
      * @var Array
      */
@@ -144,7 +149,7 @@ class ScaffoldingController extends Zend_Controller_Action {
             'char', 'bpchar', 'varchar',
             'smalltext', 'text', 'mediumtext', 'longtext'
         ),
-        'time' => array('date', 'datetime', 'timestamp')
+        'time' => array('time', 'date', 'datetime', 'timestamp')
     );
 
     /**
@@ -173,7 +178,6 @@ class ScaffoldingController extends Zend_Controller_Action {
      * @param Zend_Config|Array $options
      */
     protected function scaffold($dbSource, $fields = array(), $options = null) {
-
         // Check arguments.
         if (!($dbSource instanceof Zend_Db_Table_Abstract
                 || $dbSource instanceof Zend_Db_Table_Select)) {
@@ -239,7 +243,8 @@ class ScaffoldingController extends Zend_Controller_Action {
             if ($indexAction) {
                 $this->getHelper('ViewRenderer')
                         ->setViewScriptPathSpec(sprintf('%s/index.:suffix', $this->options['viewFolder']));
-                $this->indexAction();
+                // Call native index action, since it may be overriden in descendant class.
+                self::indexAction();
             } else {
                 $this->getHelper('ViewRenderer')
                         ->setViewScriptPathSpec(sprintf('%s/:action.:suffix', $this->options['viewFolder']));
@@ -354,12 +359,12 @@ class ScaffoldingController extends Zend_Controller_Action {
             $fields[$tableName][] = $columnName;
 
             // Prepare search form fields.
-            if (!empty($this->fields[$defColumnName]['searchable'])) {
+            if (!empty($this->fields[$defColumnName]['search'])) {
                 $searchFields[$defColumnName] = $columnDetails;
             }
 
             // Prepare sortable fields.
-            if (!empty($this->fields[$defColumnName]['sortable'])) {
+            if (!empty($this->fields[$defColumnName]['sort'])) {
                 $sortingFields[$tableName] = $columnName;
             }
 
@@ -367,7 +372,7 @@ class ScaffoldingController extends Zend_Controller_Action {
                     "$tableName." . (is_array($columnName) ? current($columnName) : $columnName);
 
             $defSortField = empty($defSortField) ?
-                    (empty($this->fields[$defColumnName]['sortBy']) ? null : $defColumnName) : $defSortField;
+                    (empty($this->fields[$defColumnName]['sort']['default']) ? null : $defColumnName) : $defSortField;
         }
 
         if ($this->dbSource instanceof Zend_Db_Table_Abstract) {
@@ -419,6 +424,9 @@ class ScaffoldingController extends Zend_Controller_Action {
                     } elseif (strpos($field, self::CSS_ID . '_to')) {
                         $field = str_replace('_' . self::CSS_ID . '_to', '', $field);
                         $select->where("{$tableInfo['name']}.$field <= ?", $value);
+                    } elseif (strpos($field, '_isempty') && $value) {
+                        $field = str_replace('_isempty', '', $field);
+                        $select->where("{$tableInfo['name']}.$field IS NULL OR {$tableInfo['name']}.$field = ''");
                     } else {
                         // Search all other native fields.
                         if (isset($tableInfo['metadata'][$field])) {
@@ -466,7 +474,7 @@ class ScaffoldingController extends Zend_Controller_Action {
         $sortMode = $this->_getParam('mode') == 'desc' ? 'desc' : 'asc';
         if (!$sortField && $defSortField) {
             $sortField = $defSortField;
-            $sortMode = $this->fields[$sortField]['sortBy'] == 'desc' ? 'desc' : 'asc';
+            $sortMode = $this->fields[$sortField]['sort']['default'] == 'desc' ? 'desc' : 'asc';
         }
         if ($sortField) {
             $select->order("{$this->fields[$sortField]['sqlName']} $sortMode");
@@ -553,19 +561,19 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
 
             // Prepare search form fields.
-            if (!empty($this->fields[$defColumnName]['searchable'])) {
+            if (!empty($this->fields[$defColumnName]['search'])) {
                 $searchFields[$defColumnName] = $columnDetails;
             }
 
             // Prepare sortable fields.
-            if (!empty($this->fields[$defColumnName]['sortable'])) {
+            if (!empty($this->fields[$defColumnName]['sort'])) {
                 $sortingFields[$tableName] = $columnName;
             }
 
             $this->fields[$defColumnName]['order'] = $defaultOrder++;
 
             $defSortField = empty($defSortField) ?
-                    (empty($this->fields[$defColumnName]['sortBy']) ? null : $defColumnName) : $defSortField;
+                    (empty($this->fields[$defColumnName]['sort']['default']) ? null : $defColumnName) : $defSortField;
         }
 
         /**
@@ -595,19 +603,24 @@ class ScaffoldingController extends Zend_Controller_Action {
                 if ($value || is_numeric($value)) {
                     // Treat date fields specially.
                     $dateFrom = $dateTo = false;
+                    $searchEmpty = false;
                     if (strpos($field, self::CSS_ID . '_from')) {
                         $field = str_replace('_' . self::CSS_ID . '_from', '', $field);
                         $dateFrom = true;
                     } elseif (strpos($field, self::CSS_ID . '_to')) {
                         $field = str_replace('_' . self::CSS_ID . '_to', '', $field);
                         $dateTo = true;
+                    } elseif (strpos($field, '_isempty') && $value) {
+                        $field = str_replace('_isempty', '', $field);
+                        $searchEmpty = true;
                     }
 
                     // Column name was normalized, need to find it.
                     $fieldDefs = array_keys($this->fields);
                     $fieldFound = false;
                     foreach ($fieldDefs as $fieldName) {
-                        if (strpos($fieldName, '.') !== false && str_replace('.', '', $fieldName) == $field) {
+                        if ($fieldName == $field
+                                || (strpos($fieldName, '.') !== false && str_replace('.', '', $fieldName) == $field)) {
                             $field = $fieldName;
                             $fieldFound = true;
                             break;
@@ -619,8 +632,18 @@ class ScaffoldingController extends Zend_Controller_Action {
                         continue;
                     }
 
-                    // Date is a period, need to handle both start and end date.
-                    if (in_array($this->fields[$field]['dataType'], $this->dataTypes['time'])) {
+                    // Search by empty field
+                    // @todo: handle aggregation - use HAVING instead of WHERE
+                    if ($searchEmpty) {
+                        if ($this->fields[$field]['aggregate']) {
+                            $method = 'having';
+                        } else {
+                            $method = 'where';
+                        }
+
+                        $select->$method("{$this->fields[$field]['sqlName']} IS NULL OR {$this->fields[$field]['sqlName']} = 0");
+                    } elseif (in_array($this->fields[$field]['dataType'], $this->dataTypes['time'])) {
+                        // Date is a period, need to handle both start and end date.
                         if (!empty($dateFrom)) {
                             $select->where("{$this->fields[$field]['sqlName']} >= ?", $value);
                         }
@@ -645,7 +668,7 @@ class ScaffoldingController extends Zend_Controller_Action {
         $sortMode = $this->_getParam('mode') == 'desc' ? 'desc' : 'asc';
         if (!$sortField && $defSortField) {
             $sortField = $defSortField;
-            $sortMode = $this->fields[$sortField]['sortBy'] == 'desc' ? 'desc' : 'asc';
+            $sortMode = $this->fields[$sortField]['sort']['default'] == 'desc' ? 'desc' : 'asc';
         }
         if ($sortField) {
             $select->order("{$this->fields[$sortField]['sqlName']} $sortMode");
@@ -697,9 +720,9 @@ class ScaffoldingController extends Zend_Controller_Action {
             $fieldType = !empty($columnDetails['fieldType']) ? $columnDetails['fieldType'] : null;
 
             $matches = array();
-            if (isset($columnDetails['searchOptions']) && is_array($columnDetails['searchOptions'])) {
-                $options = $columnDetails['searchOptions'];
-                $options[''] = 'any';
+            if (isset($columnDetails['search']['options']) && is_array($columnDetails['search']['options'])) {
+                $options = $columnDetails['search']['options'];
+                $options[''] = $this->translate('any');
                 ksort($options);
 
                 if ($fieldType == 'radio') {
@@ -712,9 +735,10 @@ class ScaffoldingController extends Zend_Controller_Action {
                     $elementType,
                     array(
                         'multiOptions' => $options,
-                        'label' => $this->getColumnTitle($defColumnName),
+                        'label' => $this->getColumnTitle($defColumnName, empty($columnDetails['translate'])),
                         'class' => self::CSS_ID . '-search-' . $elementType,
-                        'value' => ''
+                        'value' => '',
+                        'disableTranslator' => empty($columnDetails['translate'])
                     )
                 );
             } elseif (in_array($dataType, $this->dataTypes['time'])) {
@@ -774,7 +798,33 @@ class ScaffoldingController extends Zend_Controller_Action {
                 throw new Zend_Controller_Exception("Fields of type '$dataType' are not searchable.");
             }
 
-            //@todo: allow to search for certain empty values
+            // Allow to search empty records
+            if (isset($columnDetails['search']['empty'])) {
+                $elementName = "{$columnName}_isempty";
+                $form['elements'][$elementName] = array(
+                    'checkbox',
+                    array(
+                        'class' => self::CSS_ID . '-search-radio',
+                        'label' => (empty($columnDetails['search']['emptyLabel']) ? $this->getColumnTitle($defColumnName) . ' ' . _('is empty') : $columnDetails['search']['emptyLabel']),
+                    )
+                );
+                // Save custom attributes
+                if (isset($columnDetails['attribs'])
+                        && is_array($columnDetails['attribs'])) {
+                    $form['elements'][$elementName][1] = array_merge($form['elements'][$elementName][1], $columnDetails['attribs']);
+                }
+            }
+
+            // Do not search by non-empty field value
+            if (isset($columnDetails['search']['emptyOnly'])) {
+                unset($form['elements'][$columnName]);
+            }
+
+            // Save custom attributes
+            if (isset($columnDetails['attribs'])
+                    && is_array($columnDetails['attribs'])) {
+                $form['elements'][$columnName][1] = array_merge($form['elements'][$columnName][1], $columnDetails['attribs']);
+            }
         }
 
         $form['elements']['submit'] = array(
@@ -853,41 +903,23 @@ class ScaffoldingController extends Zend_Controller_Action {
 
                     Zend_Db_Table::getDefaultAdapter()->commit();
 
-                    //SANDY 
-                    //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_CREATE, self::MSG_OK));
-                    $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-                    $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_CREATE, self::MSG_OK));
+                    $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_CREATE, self::MSG_OK));
 
                     if ($this->afterCreate($form, $insertId)) {
                         if (isset($_POST[self::BUTTON_SAVE])) {
-                            //SANDY
-                            //$redirect = "{$this->view->module}/{$this->view->controller}/index";
-                            $redirect = $this->view->url(array('module' => $this->view->module,
-                                'controller' => $this->view->controller,
-                                'action' => 'index'));
+                            $redirect = "{$this->view->module}/{$this->view->controller}/index";
                         } elseif (isset($_POST[self::BUTTON_SAVEEDIT])) {
-                            //SANDY
-                            //$redirect = "{$this->view->module}/{$this->view->controller}/update/id/$insertId";
-                            $redirect = $this->view->url(array('module' => $this->view->module,
-                                'controller' => $this->view->controller,
-                                'action' => 'update',
-                                'id' => $insertId));
+                            $redirect = "{$this->view->module}/{$this->view->controller}/update/id/$insertId";
                         } elseif (isset($_POST[self::BUTTON_SAVECREATE])) {
-                            //SANDY
-                            //$redirect = "{$this->view->module}/{$this->view->controller}/create";
-                            $redirect = $this->view->url(array('module' => $this->view->module,
-                                'controller' => $this->view->controller,
-                                'action' => 'create'));
+                            $redirect = "{$this->view->module}/{$this->view->controller}/create";
                         }
 
                         $this->_redirect($redirect);
                     }
                 } catch (Zend_Db_Exception $e) {
+                    $this->lastError = $e->getMessage();
                     Zend_Db_Table::getDefaultAdapter()->rollBack();
-                    //SANDY
-                    //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_CREATE, self::MSG_ERR));
-                    $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-                    $flashMessenger->setNamespace('error')->addMessage($this->getActionMessage(self::ACTION_CREATE, self::MSG_ERR));
+                    $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_CREATE, self::MSG_ERR));
                 }
             }
         }
@@ -929,41 +961,18 @@ class ScaffoldingController extends Zend_Controller_Action {
 
             if ($this->beforeDelete($originalRow)) {
                 $row->delete();
-                //SANDY
-                //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-                $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-                $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-
+                $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
                 if ($this->afterDelete($originalRow)) {
-                    //SANDY
-                    //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-                    $this->_redirect($this->view->url(array('module' => $this->view->module,
-                                'controller' => $this->view->controller,
-                                'action' => 'index')));
+                    $this->_redirect("{$this->view->module}/{$this->view->controller}/index");
                 }
             } else {
-                //SANDY
-                //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_ERR));
-                $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-                $flashMessenger->setNamespace('error')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_ERR));
-
-                //SANDY
-                //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-                $this->_redirect($this->view->url(array('module' => $this->view->module,
-                            'controller' => $this->view->controller,
-                            'action' => 'index')));
+                $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_ERR));
+                $this->_redirect("{$this->view->module}/{$this->view->controller}/index");
             }
         } catch (Zend_Db_Exception $e) {
-            //SANDY
-            //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-            $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-            $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
-
-            //SANDY
-            //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-            $this->_redirect($this->view->url(array('module' => $this->view->module,
-                        'controller' => $this->view->controller,
-                        'action' => 'index')));
+            $this->lastError = $e->getMessage();
+            $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_DELETE, self::MSG_OK));
+            $this->_redirect("{$this->view->module}/{$this->view->controller}/index");
         }
     }
 
@@ -1034,24 +1043,15 @@ class ScaffoldingController extends Zend_Controller_Action {
                         }
 
                         Zend_Db_Table::getDefaultAdapter()->commit();
-                        //SANDY
-                        //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_UPDATE, self::MSG_OK));
-                        $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-                        $flashMessenger->setNamespace('success')->addMessage($this->getActionMessage(self::ACTION_UPDATE, self::MSG_OK));
+                        $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_UPDATE, self::MSG_OK));
 
                         if ($this->afterUpdate($form)) {
-                            //SANDY
-                            //$this->_redirect("{$this->view->module}/{$this->view->controller}/index");
-                            $this->_redirect($this->view->url(array('module' => $this->view->module,
-                                        'controller' => $this->view->controller,
-                                        'action' => 'index')));
+                            $this->_redirect("{$this->view->module}/{$this->view->controller}/index");
                         }
                     } catch (Zend_Db_Exception $e) {
+                        $this->lastError = $e->getMessage();
                         Zend_Db_Table::getDefaultAdapter()->rollBack();
-                        //SANDY
-                        //$this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_UPDATE, self::MSG_ERR));
-                        $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-                        $flashMessenger->setNamespace('error')->addMessage($this->getActionMessage(self::ACTION_UPDATE, self::MSG_ERR));
+                        $this->_helper->FlashMessenger($this->getActionMessage(self::ACTION_UPDATE, self::MSG_ERR));
                     }
                 }
             }
@@ -1071,36 +1071,34 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
 
             // Load many-to-many field values
-            if (!empty($this->fields)) {
-                foreach ($this->fields as $field => $fieldDetails) {
-                    if (isset($fieldDetails['manyToManyTable'])) {
-                        $m2mTable = $fieldDetails['manyToManyTable'];
-                        $m2mInfo = $m2mTable->info();
+            foreach ($this->fields as $field => $fieldDetails) {
+                if (isset($fieldDetails['manyToManyTable'])) {
+                    $m2mTable = $fieldDetails['manyToManyTable'];
+                    $m2mInfo = $m2mTable->info();
 
-                        $tableClass = get_class($this->dbSource);
-                        foreach ($m2mInfo['referenceMap'] as $rule => $ruleDetails) {
-                            if ($ruleDetails['refTableClass'] == $tableClass) {
-                                $selfRef = $ruleDetails['columns'];
-                            } else {
-                                $relatedRef = $ruleDetails['columns'];
-                            }
+                    $tableClass = get_class($this->dbSource);
+                    foreach ($m2mInfo['referenceMap'] as $rule => $ruleDetails) {
+                        if ($ruleDetails['refTableClass'] == $tableClass) {
+                            $selfRef = $ruleDetails['columns'];
+                        } else {
+                            $relatedRef = $ruleDetails['columns'];
                         }
-
-                        $m2mValues = $m2mTable->select()
-                                        ->from($m2mTable, $relatedRef)
-                                        ->where("$selfRef = ?", $primaryKey)
-                                        ->query(Zend_Db::FETCH_ASSOC)->fetchAll();
-
-                        $multiOptions = array();
-                        foreach ($m2mValues as $_value) {
-                            $multiOptions[] = $_value[$relatedRef];
-                        }
-
-                        // Column name must be normalized
-                        // (Zend_Form_Element::filterName does it anyway).
-                        $field = str_replace('.', '', $field);
-                        $entity[$field] = $multiOptions;
                     }
+
+                    $m2mValues = $m2mTable->select()
+                                    ->from($m2mTable, $relatedRef)
+                                    ->where("$selfRef = ?", $primaryKey)
+                                    ->query(Zend_Db::FETCH_ASSOC)->fetchAll();
+
+                    $multiOptions = array();
+                    foreach ($m2mValues as $_value) {
+                        $multiOptions[] = $_value[$relatedRef];
+                    }
+
+                    // Column name must be normalized
+                    // (Zend_Form_Element::filterName does it anyway).
+                    $field = str_replace('.', '', $field);
+                    $entity[$field] = $multiOptions;
                 }
             }
 
@@ -1113,6 +1111,12 @@ class ScaffoldingController extends Zend_Controller_Action {
         }
     }
 
+    /**
+     * Formats the post-action message according to the template.
+     * @param String $action action name
+     * @param String $msgType message type
+     * @return String
+     */
     private function getActionMessage($action, $msgType) {
         return sprintf($this->translate($this->messages[$action][$msgType]), $this->options['entityTitle']);
     }
@@ -1198,10 +1202,11 @@ class ScaffoldingController extends Zend_Controller_Action {
                     $form['elements'][$columnName] = array(
                         'select', array(
                             'multiOptions' => $options,
-                            'label' => $this->getColumnTitle($columnName),
-                            'description' => $this->getColumnDescription($columnName),
+                            'label' => $this->getColumnTitle($columnName, empty($this->fields[$columnName]['translate'])),
+                            'description' => $this->getColumnDescription($columnName, empty($this->fields[$columnName]['translate'])),
                             'required' => $required,
                             'value' => $defaultValue,
+                            'disableTranslator' => empty($this->fields[$columnName]['translate'])
                         )
                     );
                 } else {
@@ -1213,8 +1218,8 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
 
             $elementOptions = array(
-                'label' => $this->getColumnTitle($columnName),
-                'description' => $this->getColumnDescription($columnName),
+                'label' => $this->getColumnTitle($columnName, empty($this->fields[$columnName]['translate'])),
+                'description' => $this->getColumnDescription($columnName, empty($this->fields[$columnName]['translate'])),
                 'required' => $required,
                 'value' => $defaultValue,
                 'validators' => isset($this->fields[$columnName]['validators']) ? $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData) : array(),
@@ -1302,7 +1307,10 @@ class ScaffoldingController extends Zend_Controller_Action {
 
                 $form['elements'][$columnName] = array(
                     $elementType,
-                    array_merge(array('multiOptions' => $options), $elementOptions)
+                    array_merge(array(
+                        'multiOptions' => $options,
+                        'disableTranslator' => empty($this->fields[$columnName]['translate'])
+                            ), $elementOptions)
                 );
             } elseif (in_array($dataType, $this->dataTypes['numeric'])) {
                 // Generate fields for numerics.
@@ -1350,87 +1358,86 @@ class ScaffoldingController extends Zend_Controller_Action {
         /**
          * Look for additional field definitions (not from current model).
          */
-        if (!empty($this->fields)) {
-            foreach ($this->fields as $columnName => $columnDetails) {
+        foreach ($this->fields as $columnName => $columnDetails) {
 
-                if (in_array($columnName, $handledRefs)) {
-                    continue;
-                }
+            if (in_array($columnName, $handledRefs)) {
+                continue;
+            }
 
-                $fullColumnName = explode('.', $columnName);
-                if (count($fullColumnName) == 2) {
-                    $refName = $fullColumnName[0];
-                    $refDisplayField = $fullColumnName[1];
-                    foreach ($info['dependentTables'] as $depTableClass) {
-                        $dependentTable = new $depTableClass;
-                        if (!$dependentTable instanceof Zend_Db_Table_Abstract) {
-                            throw new Zend_Controller_Exception('Zend_Controller_Scaffolding requires a Zend_Db_Table_Abstract as model providing class.');
-                        }
-
-                        $references = $dependentTable->info(Zend_Db_Table::REFERENCE_MAP);
-                        // Reference with such name may not be defined...
-                        if (!isset($references[$refName])) {
-                            continue;
-                        }
-                        // For now, skip back-references (reference to the current entity table).
-                        // @todo: would it be nice to update dependent table columns?
-                        elseif ($references[$refName]['refTableClass'] == $tableClass) {
-                            continue;
-                        }
-                        // All is fine, this is a true n-n table.
-                        else {
-                            $reference = $references[$refName];
-                        }
-
-                        $optionsTable = new $reference['refTableClass'];
-                        // Auto-detect PK based on metadata
-                        if (!isset($reference['refColumns'])) {
-                            $optionsTableInfo = $optionsTable->info();
-                            $reference['refColumns'] = array_shift($optionsTableInfo['primary']);
-                        }
-
-                        // Value required?
-                        $required = isset($columnDetails['required']) && $columnDetails['required'] ? true : false;
-
-                        $options = array();
-                        foreach ($optionsTable->fetchAll()->toArray() AS $k => $v) {
-                            $key = $v[$reference['refColumns']];
-                            if (!isset($options[$key])) {
-                                $options[$key] = $v[$refDisplayField];
-                            }
-                        }
-
-                        if (!empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'multicheckbox') {
-                            $elementType = 'MultiCheckbox';
-                        } else {
-                            $elementType = 'Multiselect';
-                        }
-
-                        // Column name must be normalized
-                        // (Zend_Form_Element::filterName does it anyway).
-                        $formColumnName = str_replace('.', '', $columnName);
-                        $form['elements'][$formColumnName] = array(
-                            $elementType, array(
-                                'multiOptions' => $options,
-                                'label' => $this->getColumnTitle($columnName),
-                                'description' => $this->getColumnDescription($columnName),
-                                'required' => $required,
-                                'validators' => isset($this->fields[$columnName]['validators']) ?
-                                        $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData) : array(),
-                            )
-                        );
-
-                        // Save manyToMany table information.
-                        $this->fields[$columnName]['manyToManyTable'] = $dependentTable;
-                        break;
+            $fullColumnName = explode('.', $columnName);
+            if (count($fullColumnName) == 2) {
+                $refName = $fullColumnName[0];
+                $refDisplayField = $fullColumnName[1];
+                foreach ($info['dependentTables'] as $depTableClass) {
+                    $dependentTable = new $depTableClass;
+                    if (!$dependentTable instanceof Zend_Db_Table_Abstract) {
+                        throw new Zend_Controller_Exception('Zend_Controller_Scaffolding requires a Zend_Db_Table_Abstract as model providing class.');
                     }
-                }
 
-                // Save custom attributes
-                if (isset($this->fields[$columnName]['attribs'])
-                        && is_array($this->fields[$columnName]['attribs'])) {
-                    $form['elements'][$columnName][1] = array_merge($form['elements'][$columnName][1], $this->fields[$columnName]['attribs']);
+                    $references = $dependentTable->info(Zend_Db_Table::REFERENCE_MAP);
+                    // Reference with such name may not be defined...
+                    if (!isset($references[$refName])) {
+                        continue;
+                    }
+                    // For now, skip back-references (reference to the current entity table).
+                    // @todo: would it be nice to update dependent table columns?
+                    elseif ($references[$refName]['refTableClass'] == $tableClass) {
+                        continue;
+                    }
+                    // All is fine, this is a true n-n table.
+                    else {
+                        $reference = $references[$refName];
+                    }
+
+                    $optionsTable = new $reference['refTableClass'];
+                    // Auto-detect PK based on metadata
+                    if (!isset($reference['refColumns'])) {
+                        $optionsTableInfo = $optionsTable->info();
+                        $reference['refColumns'] = array_shift($optionsTableInfo['primary']);
+                    }
+
+                    // Value required?
+                    $required = isset($columnDetails['required']) && $columnDetails['required'] ? true : false;
+
+                    $options = array();
+                    foreach ($optionsTable->fetchAll()->toArray() AS $k => $v) {
+                        $key = $v[$reference['refColumns']];
+                        if (!isset($options[$key])) {
+                            $options[$key] = $v[$refDisplayField];
+                        }
+                    }
+
+                    if (!empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'multicheckbox') {
+                        $elementType = 'MultiCheckbox';
+                    } else {
+                        $elementType = 'Multiselect';
+                    }
+
+                    // Column name must be normalized
+                    // (Zend_Form_Element::filterName does it anyway).
+                    $formColumnName = str_replace('.', '', $columnName);
+                    $form['elements'][$formColumnName] = array(
+                        $elementType, array(
+                            'multiOptions' => $options,
+                            'label' => $this->getColumnTitle($columnName, empty($columnDetails['translate'])),
+                            'description' => $this->getColumnDescription($columnName, empty($columnDetails['translate'])),
+                            'required' => $required,
+                            'validators' => isset($this->fields[$columnName]['validators']) ?
+                                    $this->prepareValidators($columnName, $this->fields[$columnName]['validators'], $entityData) : array(),
+                            'disableTranslator' => empty($columnDetails['translate'])
+                        )
+                    );
+
+                    // Save manyToMany table information.
+                    $this->fields[$columnName]['manyToManyTable'] = $dependentTable;
+                    break;
                 }
+            }
+
+            // Save custom attributes
+            if (isset($this->fields[$columnName]['attribs'])
+                    && is_array($this->fields[$columnName]['attribs'])) {
+                $form['elements'][$columnName][1] = array_merge($form['elements'][$columnName][1], $this->fields[$columnName]['attribs']);
             }
         }
 
@@ -1529,12 +1536,12 @@ class ScaffoldingController extends Zend_Controller_Action {
             $matches = array();
             $set = false;
             if (isset($metadata[$columnName]) && preg_match('/^enum/i', $metadata[$columnName]['DATA_TYPE'])
-                    || (isset($columnDetails['searchOptions'])
-                    && is_array($columnDetails['searchOptions']) && $set = true)) {
+                    || (isset($columnDetails['search']['options'])
+                    && is_array($columnDetails['search']['options']) && $set = true)) {
                 $options = array();
                 // Try to use the specified options
                 if ($set) {
-                    $options = $columnDetails['searchOptions'];
+                    $options = $columnDetails['search']['options'];
                 }
                 // or extract options from enum
                 elseif (preg_match_all('/\'(.*?)\'/', $metadata[$columnName]['DATA_TYPE'], $matches)) {
@@ -1542,7 +1549,7 @@ class ScaffoldingController extends Zend_Controller_Action {
                         $options[$match] = $match;
                     }
                 }
-                $options[''] = 'any';
+                $options[''] = $this->translate('any');
                 ksort($options);
 
                 if (!empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'radio') {
@@ -1555,9 +1562,10 @@ class ScaffoldingController extends Zend_Controller_Action {
                     $elementType,
                     array(
                         'multiOptions' => $options,
-                        'label' => $this->getColumnTitle($defColumnName),
+                        'label' => $this->getColumnTitle($defColumnName, empty($columnDetails['translate'])),
                         'class' => self::CSS_ID . '-search-' . $elementType,
-                        'value' => ''
+                        'value' => '',
+                        'disableTranslator' => empty($columnDetails['translate'])
                     )
                 );
             } elseif (in_array($dataType, $this->dataTypes['time'])) {
@@ -1606,7 +1614,7 @@ class ScaffoldingController extends Zend_Controller_Action {
                                 array_shift($ruleDetails['refColumns']) : $ruleDetails['refColumns'];
 
                         $options = array();
-                        $options[''] = '';
+                        $options[''] = $this->translate('any');
 
                         $relatedModel = new $ruleDetails['refTableClass']();
                         foreach ($relatedModel->fetchAll()->toArray() as $k => $v) {
@@ -1615,12 +1623,20 @@ class ScaffoldingController extends Zend_Controller_Action {
                                 $options[$key] = $v[$displayField];
                             }
                         }
+                        ksort($options);
+
+                        if (!empty($columnDetails['fieldType']) && $columnDetails['fieldType'] == 'radio') {
+                            $elementType = 'radio';
+                        } else {
+                            $elementType = 'select';
+                        }
 
                         $form['elements'][$columnName] = array(
-                            'select', array(
+                            $elementType, array(
                                 'multiOptions' => $options,
-                                'label' => $this->getColumnTitle($columnName),
+                                'label' => $this->getColumnTitle($columnName, empty($columnDetails['translate'])),
                                 'class' => self::CSS_ID . '-search-select',
+                                'disableTranslator' => empty($columnDetails['translate'])
                             )
                         );
                     } else {
@@ -1640,16 +1656,32 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
 
             // Allow to search empty records
-            // @todo: implement search by empty values
-//            if (isset($this->fields[$columnName]['searchEmpty'])) {
-//                $form['elements']["{$columnName}searchempty"] = array(
-//                        'checkbox',
-//                        array(
-//                            'class' => self::CSS_ID . '-search-radio',
-//                            'label' => $this->getColumnTitle($columnName) . _(' is empty'),
-//                        )
-//                    );
-//            }
+            if (isset($this->fields[$defColumnName]['search']['empty'])) {
+                $elementName = "{$columnName}_isempty";
+                $form['elements'][$elementName] = array(
+                    'checkbox',
+                    array(
+                        'class' => self::CSS_ID . '-search-radio',
+                        'label' => (empty($this->fields[$defColumnName]['search']['emptyLabel']) ? $this->getColumnTitle($defColumnName) . ' ' . _('is empty') : $this->fields[$defColumnName]['search']['emptyLabel']),
+                    )
+                );
+                // Save custom attributes
+                if (isset($this->fields[$defColumnName]['attribs'])
+                        && is_array($this->fields[$defColumnName]['attribs'])) {
+                    $form['elements'][$elementName][1] = array_merge($form['elements'][$elementName][1], $this->fields[$defColumnName]['attribs']);
+                }
+            }
+
+            // Do not search by non-empty field value
+            if (isset($this->fields[$defColumnName]['search']['emptyOnly'])) {
+                unset($form['elements'][$columnName]);
+            }
+
+            // Save custom attributes
+            if (isset($this->fields[$defColumnName]['attribs'])
+                    && is_array($this->fields[$defColumnName]['attribs'])) {
+                $form['elements'][$columnName][1] = array_merge($form['elements'][$columnName][1], $this->fields[$defColumnName]['attribs']);
+            }
         }
 
         $form['elements']['submit'] = array(
@@ -1811,7 +1843,7 @@ class ScaffoldingController extends Zend_Controller_Action {
 
             $name = $this->translate($this->getColumnTitle($columnName));
             // Generate sorting link
-            if (!empty($this->fields[$columnName]['sortable'])) {
+            if (!empty($this->fields[$columnName]['sort'])) {
 
                 $currentMode = ($sortField == $columnName ? $sortMode : '');
 
@@ -1851,7 +1883,6 @@ class ScaffoldingController extends Zend_Controller_Action {
     private function prepareList($select) {
         // Enable paginator if needed
         if (!empty($this->options['pagination'])) {
-
             $pageNumber = $this->_getParam('page');
             $paginator = Zend_Paginator::factory($select);
 
@@ -1870,21 +1901,20 @@ class ScaffoldingController extends Zend_Controller_Action {
 
             $this->view->paginator = $paginator;
             $this->view->pageNumber = $pageNumber;
-
         } else {
-
             $items = $select->query()->fetchAll();
-
         }
 
         $info = $this->getMetadata();
-        $itemList = array();
+        $itemList = $origItemList = array();
 
         foreach ($items as $item) {
             // Convert to array if object.
             if (is_object($item)) {
                 $item = (array) $item;
             }
+
+            $origRow = array();
 
             foreach ($this->fields as $columnName => $columnDetails) {
                 // Table fields have fully-qualified SQL name.
@@ -1902,20 +1932,29 @@ class ScaffoldingController extends Zend_Controller_Action {
                     $column = $columnName;
                 }
 
-                // null values may be returned.
+                // Null values may be returned.
                 $value = !empty($item[$column]) ? $item[$column] : null;
+
+                // Save original value for possbile usage.
+                $origValue = $value;
 
                 // Call list view modifier for specific column if set
                 if (isset($columnDetails['listModifier'])) {
                     $value = call_user_func($columnDetails['listModifier'], $value);
                 }
 
+                // Translate the field if necessary.
                 if (!empty($columnDetails['translate'])) {
                     $value = $this->view->translate($value);
                 }
 
                 $row[$columnName] = $value;
+
+                if ($value != $origValue) {
+                    $origRow[$columnName] = $origValue;
+                }
             }
+
             // Fetch PK(s).
             if (!is_null($info)) {
                 $keys = array();
@@ -1926,9 +1965,11 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
 
             $itemList[] = $row;
+            $origItemList[] = $origRow;
         }
 
         $this->view->items = $itemList;
+        $this->view->origItems = $origItemList;
         return $itemList;
     }
 
@@ -1974,11 +2015,17 @@ class ScaffoldingController extends Zend_Controller_Action {
      * @param String $columnFieldName
      * @return String $columnLabel
      */
-    private function getColumnTitle($columnName) {
+    private function getColumnTitle($columnName, $translate = false) {
         if (isset($this->fields[$columnName]['title'])) {
-            return $this->fields[$columnName]['title'];
+            $title = $this->fields[$columnName]['title'];
         } else {
-            return ucfirst($columnName);
+            $title = ucfirst($columnName);
+        }
+
+        if ($translate) {
+            return $this->translate($title);
+        } else {
+            return $title;
         }
     }
 
@@ -1987,11 +2034,22 @@ class ScaffoldingController extends Zend_Controller_Action {
      * @param String $columnFieldName
      * @return String $columnLabel
      */
-    private function getColumnDescription($columnName) {
+    private function getColumnDescription($columnName, $translate = false) {
         if (isset($this->fields[$columnName]['description'])) {
-            return $this->fields[$columnName]['description'];
+            $description = $this->fields[$columnName]['description'];
+        } else {
+            $description = '';
         }
-        return null;
+
+        if ($description) {
+            if ($translate) {
+                return $this->translate($description);
+            } else {
+                return $description;
+            }
+        } else {
+            return null;
+        }
     }
 
     /**
@@ -2044,7 +2102,7 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
         }
 
-        $formObject->setAttrib('class', 'well');
+        $formObject->setAttrib('class', self::CSS_ID . '-edit-form');
 
         return $formObject;
     }
@@ -2066,7 +2124,7 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
         }
 
-        $formObject->setAttrib('class', 'well form-search');
+        $formObject->setAttrib('class', self::CSS_ID . '-search-form');
         return $formObject;
     }
 
@@ -2171,7 +2229,7 @@ class ScaffoldingController extends Zend_Controller_Action {
     /**
      * Sorts fields for listing.
      */
-    function sortByListOrder($a, $b) {
+    private function sortByListOrder($a, $b) {
         if (!isset($a['listOrder'])) {
             $a['listOrder'] = $a['order'];
         }
@@ -2186,7 +2244,7 @@ class ScaffoldingController extends Zend_Controller_Action {
     /**
      * Sorts fields for listing.
      */
-    function sortByEditOrder($a, $b) {
+    private function sortByEditOrder($a, $b) {
         if (!isset($a['editOrder'])) {
             $a['editOrder'] = $a['order'];
         }
@@ -2201,7 +2259,7 @@ class ScaffoldingController extends Zend_Controller_Action {
     /**
      * Removes elements that must be skipped from listing.
      */
-    function removeHiddenListItems($value) {
+    private function removeHiddenListItems($value) {
         if (!empty($value['hide']) && ($value['hide'] === true || $value['hide'] == 'list')) {
             return false;
         }

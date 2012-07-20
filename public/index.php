@@ -31,7 +31,7 @@ require_once 'Zend/Application.php';
 require_once 'Zend/Loader/Autoloader.php';
 $loader = Zend_Loader_Autoloader::getInstance();
 $loader->registerNamespace('Shanty_');
-$loader->registerNamespace('HTTP_');
+$loader->registerNamespace('Lex0r_');
 
 // Create application, bootstrap, and run
 $application = new Zend_Application(

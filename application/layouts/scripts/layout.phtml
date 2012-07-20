@@ -71,14 +71,12 @@
         $this->navigation()->breadcrumbs()->setPartial($partial);
         echo $this->navigation()->breadcrumbs()->setMinDepth(0)->render();
       ?>
-      
       <?php
         /**
          *@todo: change layout of flash messages 
          */
         echo $this->partial('partials/flashMessages.phtml', array('msgs' => $this->LayoutGetFlashMessages()));
       ?>
-
       <?php echo $this->layout()->content; ?>
       
       <hr />
