@@ -19,6 +19,7 @@ class NewsController extends MyScaffoldingController {
                                         'sortable'  => true),
                         'body'  => array('title'    =>  'text',
                                         'searchable'=> true));
+        
         $this->scaffold(new Application_Model_DbTable_News(), $fields, $options);
     }
 
