@@ -47,6 +47,13 @@ class MyScaffoldingController extends Lex0r_Scaffolding {
         return false;
     }
     
+    /**
+     *
+     * @param Zend_Form $form
+     * @param type $insertId
+     * @return boolean
+     * override parent function -> module is not defined and therefore cannot be used when redirecting
+     */
     protected function afterCreate(Zend_Form $form, $insertId) {
         if (isset($_POST[self::BUTTON_SAVE])) {
             $redirect = "{$this->view->controller}/index";
