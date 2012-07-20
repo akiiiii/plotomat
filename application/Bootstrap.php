@@ -73,10 +73,10 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         // Add pagination route
         $router->addRoute(
-                'pagination', new Zend_Controller_Router_Route('/:controller/:action/page/:page', array(
+                'pagination', new Zend_Controller_Router_Route('/:controller/:action/:page', array(
                     'controller' => 'index',
                     'action' => 'index',
-                    'page' => null,
+                    'page' => 1,
                 )));
 
         // Add some routes

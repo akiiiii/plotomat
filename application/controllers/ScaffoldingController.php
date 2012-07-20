@@ -1851,6 +1851,7 @@ class ScaffoldingController extends Zend_Controller_Action {
     private function prepareList($select) {
         // Enable paginator if needed
         if (!empty($this->options['pagination'])) {
+
             $pageNumber = $this->_getParam('page');
             $paginator = Zend_Paginator::factory($select);
 
@@ -1869,8 +1870,11 @@ class ScaffoldingController extends Zend_Controller_Action {
 
             $this->view->paginator = $paginator;
             $this->view->pageNumber = $pageNumber;
+
         } else {
+
             $items = $select->query()->fetchAll();
+
         }
 
         $info = $this->getMetadata();
@@ -2040,7 +2044,7 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
         }
 
-        $formObject->setAttrib('class', self::CSS_ID . '-edit-form');
+        $formObject->setAttrib('class', 'well');
 
         return $formObject;
     }
@@ -2062,7 +2066,7 @@ class ScaffoldingController extends Zend_Controller_Action {
             }
         }
 
-        $formObject->setAttrib('class', self::CSS_ID . '-search-form');
+        $formObject->setAttrib('class', 'well form-search');
         return $formObject;
     }
 
