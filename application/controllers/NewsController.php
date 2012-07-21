@@ -15,10 +15,10 @@ class NewsController extends MyScaffoldingController {
                         'customMessenger' => true);
         
         $fields = array('title' => array('title'    =>  'Titel',
-                                        'searchable' => true,
+                                        'search' => true,
                                         'sortable'  => true),
                         'body'  => array('title'    =>  'text',
-                                        'searchable'=> true));
+                                        'search'=> true));
         
         $this->scaffold(new Application_Model_DbTable_News(), $fields, $options);
     }
