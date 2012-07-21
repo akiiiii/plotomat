@@ -114,5 +114,4 @@ class MyScaffoldingController extends Lex0r_Scaffolding {
             $this->_redirect("{$this->view->controller}/index");
         }
     }
-    
 }

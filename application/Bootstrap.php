@@ -62,7 +62,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
 
         $front = Zend_Controller_Front::getInstance();
         $router = $front->getRouter();
-
+        
         // Add default routes
         $router->addRoute(
                 'default', new Zend_Controller_Router_Route('/:controller/:action/:id', array(
@@ -77,6 +77,15 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                     'controller' => 'index',
                     'action' => 'index',
                     'page' => 1,
+                )));
+        
+        // Add pagination orderby route
+        $router->addRoute(
+                'paginationOrderBy', new Zend_Controller_Router_Route('/:controller/:action/order/:orderby/:mode', array(
+                    'controller' => 'index',
+                    'action' => 'index',
+                    'orderby' => null,
+                    'mode' => null,
                 )));
 
         // Add some routes
