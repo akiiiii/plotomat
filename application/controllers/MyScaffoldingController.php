@@ -1,5 +1,10 @@
 <?php
 
+/**
+ *generell keine so gute Idee, weil alle Logik im Controller sitzt
+ * werde ich erst mal nicht weiter verfolgen 
+ */
+
 class MyScaffoldingController extends Lex0r_Scaffolding {
 
     /**
