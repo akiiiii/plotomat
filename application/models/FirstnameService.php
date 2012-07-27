@@ -28,10 +28,10 @@ class Application_Model_FirstnameService {
      */
     private $maxYear = 2011;
 
-    function __construct() {
+    function __construct(Application_Model_DbTable_DataFirstnames $firstnameTableModel,Application_Model_DbTable_DataFirstnamesRank $firstnameRankTableModel) {
         //// database muss gar nicht extra definiert werden - das geht out of the box mit den richtigen werten in der application.ini
-        $this->firstnames = new Application_Model_DbTable_DataFirstnames();
-        $this->firstnamesRank = new Application_Model_DbTable_DataFirstnamesRank();
+        $this->firstnames = $firstnameTableModel;
+        $this->firstnamesRank = $firstnameRankTableModel;
     }
 
     /**

@@ -12,7 +12,7 @@ class ToolsController extends Zend_Controller_Action {
      * get service ready
      */
     public function preDispatch() {
-        $this->firstnameService = new Application_Model_FirstnameService();
+        $this->firstnameService = new Application_Model_FirstnameService(new Application_Model_DbTable_DataFirstnames(), new Application_Model_DbTable_DataFirstnamesRank());
     }
 
     /**

@@ -14,10 +14,9 @@ class Application_Model_UserService {
      */
     protected $aclRoles;
 
-    function __construct() {
-        //// database muss gar nicht extra definiert werden - das geht out of the box mit den richtigen werten in der application.ini
-        $this->users = new Application_Model_DbTable_Users();
-        $this->aclRoles = new Application_Model_DbTable_AclRoles();
+    function __construct(Application_Model_DbTable_Users $usersTableModel, Application_Model_DbTable_AclRoles $aclRolesTableModel) {
+        $this->users = $usersTableModel;
+        $this->aclRoles = $aclRolesTableModel;
     }
 
     private function getWhereClauseForUserId($id) {

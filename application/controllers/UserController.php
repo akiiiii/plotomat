@@ -22,7 +22,7 @@ class UserController extends Zend_Controller_Action {
     protected $aclService;
 
     public function preDispatch() {
-        $this->userService = new Application_Model_UserService();
+        $this->userService = new Application_Model_UserService(new Application_Model_DbTable_Users(), new Application_Model_DbTable_AclRoles());
         $this->aclService = new Application_Model_AclService();
 
         /*
