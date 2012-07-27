@@ -28,9 +28,9 @@ class RoleController extends Zend_Controller_Action {
 
         if ($state == "update") {
             // preset variables
-            $this->view->form = new Application_Form_Role($state, $this->aclService->GetRoleById($id));
+            $this->view->form = new Application_Model_Form_Role($state, $this->aclService->GetRoleById($id));
         } else {
-            $this->view->form = new Application_Form_Role();
+            $this->view->form = new Application_Model_Form_Role();
         }
 
         if ($this->getRequest()->isPost() &&

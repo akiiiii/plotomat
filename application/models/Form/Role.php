@@ -3,34 +3,44 @@
 /**
  * @todo: bring in line with other method of form management under models/form/ 
  */
-class Application_Form_Resource extends Zend_Form {
+class Application_Model_Form_Role extends Zend_Form {
 
     protected $formState; /// create-mode or update-mode?
-    protected $currentResource;
+    protected $currentRole;
     protected $aclService;
 
     /*
      * $currentRole is rowSet of Role-Table
      */
 
-    public function __construct($formState = "create", $currentResource = null) {
+    public function __construct($formState = "create", $currentRole = null) {
         /// initialize aclService
         $this->aclService = new Application_Model_AclService();
         $this->formState = $formState;
-        $this->currentResource = $currentResource;
+        $this->currentRole = $currentRole;
 
         $id = new Zend_Form_Element_Hidden('id');
 
         $name = new Zend_Form_Element_Text('name');
-        $name->setLabel("Resource name:");
+        $name->setLabel("Role name:");
 
-        $this->addElements(array($id, $name));
+        $parent_id = new Zend_Form_Element_Select('parent_id');
+        $parent_id->addMultiOption(NULL, '');
+        $roleValues = $this->aclService->GetAllAclRoles();
+        foreach ($roleValues as $valueSet) {
+            $parent_id->addMultiOption($valueSet->id, $valueSet->name);
+        }
+        $parent_id->setLabel("Role parent:");
+
+        $this->addElements(array($id, $name, $parent_id));
         $this->addSubmit();
 
         // create or update depending on the current state
         if ($formState == 'update') {
             // set variables
-            $rowArr = $currentResource[0]->toArray(); // in array umwandeln
+            $rowArr = $currentRole[0]->toArray(); // in array umwandeln
+
+            Zend_Debug::dump($rowArr);
             foreach ($rowArr as $key => $value) {
                 $this->getElement($key)->setValue($value);
             }
@@ -46,16 +56,18 @@ class Application_Form_Resource extends Zend_Form {
     public function persistData() {
         $this->removeSubmit(); /// remove for insert
 
-        $resourcesTable = new Application_Model_DbTable_AclResources();
+        $rolesTable = new Application_Model_DbTable_AclRoles();
 
         if ($this->formState == 'update') {
             foreach ($this->getElements() as $element) {
                 $value = $element->getValue();
-                $this->currentResource[0][$element->getId()] = $value;
+                if ($value == '')
+                    $value = null;
+                $this->currentRole[0][$element->getId()] = $value;
             }
-            $this->currentResource[0]->save();
+            $this->currentRole[0]->save();
         } else {
-            $resourcesTable->insert($this->getValues());
+            $rolesTable->insert($this->getValues());
         }
 
         $this->addSubmit();

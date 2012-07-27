@@ -29,9 +29,9 @@ class ResourceController extends Zend_Controller_Action {
         //Zend_Debug::dump($this->_getAllParams());
         if ($state == "update") {
             // preset variables
-            $this->view->form = new Application_Form_Resource($state, $this->aclService->GetResourceById($id));
+            $this->view->form = new Application_Model_Form_Resource($state, $this->aclService->GetResourceById($id));
         } else {
-            $this->view->form = new Application_Form_Resource();
+            $this->view->form = new Application_Model_Form_Resource();
         }
 
         if ($this->getRequest()->isPost() &&
