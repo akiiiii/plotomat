@@ -84,43 +84,6 @@ class UserController extends Zend_Controller_Action {
         $this->_redirect('user');
     }
 
-    public function logoutAction() {
-        $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
-        $flashMessenger->setNamespace('success')->addMessage('Logged out! Bye bye ..');
-        Zend_Auth::getInstance()->clearIdentity();
-        $this->_redirect('index');
-    }
-
-    public function loginAction() {
-
-        $form = new Application_Model_Form_Login(array('action' => '/user/login'));
-
-        if ($this->getRequest()->isPost()) {
-            $form_data = $this->getRequest()->getPost();
-
-            if ($form->isValid($form_data)) {
-                echo "Valid input!";
-            } else {
-                /*
-                 * formatiere mir die errors so wie ich sie haben will
-                 */
-                $errorHelper = $this->view->getHelper('formErrors');
-                $errorHelper->setElementStart('<div class="alert-message error"%s><p>');
-                $errorHelper->setElementSeparator('</p><p>');
-                $errorHelper->setElementEnd('</p></div>');
-
-                $errorMsgs = $form->getMessages();
-                if (isset($errorMsgs) && !empty($errorMsgs)) {
-                    $this->view->errors = $errorMsgs;
-                }
-            }
-            $email = $form->getValue('email');
-            $pswd = $form->getValue('pswd');
-        }
-
-        $this->view->form = $form;
-    }
-
     public function addAction() {
         $form = new Application_Model_Form_Login(array('action' => '/user/add'));
         $this->view->form = $form;

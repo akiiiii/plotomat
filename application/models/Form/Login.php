@@ -21,12 +21,6 @@ class Application_Model_Form_Login extends Zend_Form {
                 ->removeDecorator('htmlTag')
                 ->setRequired(true);
 
-        $pswd = new Zend_Form_Element_Password('login_password');
-        $pswd->setAttrib('size', 35)
-                ->removeDecorator('label')
-                ->removeDecorator('htmlTag')
-                ->setRequired(true);
-
         //// ReCaptcha
         $registry = Zend_Registry::getInstance();
         $pub = $registry->config->recaptcha->pubkey;

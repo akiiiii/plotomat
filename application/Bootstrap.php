@@ -143,9 +143,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
         $this->bootstrap('frontController'); // make sure frontcontroller is bootstrapped!
 
         $auth = Zend_Auth::getInstance();
-
-        //// hol mir mal die ACL-Daten vom Model - also aus der DB im besten Fall
-        $acl = new Application_Model_Acl;
+        $acl = new Application_Model_LibraryAcl;
 
         //// zeig dem frontcontroller sein accesscontrol plugin
         $this->getResource('frontController')
@@ -191,7 +189,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                     'id' => 2,
                     'route' => 'default',
                     'module' => 'default',
-                    'controller' => 'user',
+                    'controller' => 'auth',
                     'visible' => false, /// default => nicht sichtbar
                     'action' => 'login',
                 ));
@@ -201,7 +199,7 @@ class Bootstrap extends Zend_Application_Bootstrap_Bootstrap {
                     'id' => 3,
                     'route' => 'default',
                     'module' => 'default',
-                    'controller' => 'user',
+                    'controller' => 'auth',
                     'visible' => false, /// default => not visible
                     'action' => 'logout',
                 ));

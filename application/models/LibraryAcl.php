@@ -3,7 +3,7 @@
 /**
  *@todo rewrite this to use Database Tables 
  */
-class Application_Model_Acl extends Zend_Acl {
+class Application_Model_LibraryAcl extends Zend_Acl {
 
     public function __construct() {
 
@@ -13,6 +13,7 @@ class Application_Model_Acl extends Zend_Acl {
         // RESSOURCES
         $this->add(new Zend_Acl_Resource('administration')); /// resource for administration anchor
         
+        $this->add(new Zend_Acl_Resource('auth'));
         $this->add(new Zend_Acl_Resource('user'));
         $this->add(new Zend_Acl_Resource('contact'));
         $this->add(new Zend_Acl_Resource('tools'));
@@ -28,20 +29,15 @@ class Application_Model_Acl extends Zend_Acl {
         $this->addRole(new Zend_Acl_Role('admin'), 'standard');
         $this->addRole(new Zend_Acl_Role('superadmin'), 'admin');
 
-        //// alles erlauben f�r superadmin
+        //// alles erlauben für superadmin
         $this->allow('superadmin');
 
+        $this->allow('guest', 'auth');
         $this->allow('guest', 'user', 'login');
         $this->allow('guest', 'contact', 'index');
         $this->allow('guest', 'tools', 'scan');
         $this->allow('guest', 'index', 'index');
 
-        //$this->deny('superadmin', 'role');
-        /* 		
-          $this->deny('guest', 'redaktion');
-
-          $this->allow('admin', 'admin');
-         */
     }
 
 }
