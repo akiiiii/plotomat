@@ -21,6 +21,7 @@ class Application_Plugin_Auth_AccessControl extends Zend_Controller_Plugin_Abstr
     public function preDispatch(Zend_Controller_Request_Abstract $request) {
         /*
          * haben wir hier schon eine identität in der Session? Wenn nicht, dann guest
+         * @todo: check out why some use getStorage here
          */
         if ($this->_auth->hasIdentity() && is_object($this->_auth->getIdentity())) {
             $role = $this->_auth->getIdentity()->role;
@@ -28,13 +29,11 @@ class Application_Plugin_Auth_AccessControl extends Zend_Controller_Plugin_Abstr
             $role = 'guest';
         }
 
-        //Zend_Debug::dump($this->_auth->getIdentity());
-
         $resource = $request->getControllerName();
         $action = $request->getActionName();
 
         
-        // ACL to Zend_Navigation
+        // assign ACL to Zend_Navigation
         $view = Zend_Layout::getMvcInstance()->getView();
         $view->navigation()->setAcl($this->_acl);
         $view->navigation()->setRole($role);
@@ -44,20 +43,13 @@ class Application_Plugin_Auth_AccessControl extends Zend_Controller_Plugin_Abstr
             //// der ist eingeloggt - hat also schon Rechte bzw. auch nicht
             if ($this->_auth->hasIdentity()) {
 
-                //keine Rechte für diese Seite - zurück zur Index!
-                /*
-                 * Umleitung => ABER: index/index muss auch eine erlaubte seite sein ;)
-                 */
                 $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
                 $flashMessenger->setNamespace('error')->addMessage('You do not have the right to access this page.');
 
                 $redirector = Zend_Controller_Action_HelperBroker::getStaticHelper('redirector');
                 $redirector->gotoUrl('/index/index')->redirectAndExit();
             } else {
-                //nicht angemeldet -> Login
-                /*
-                 * Umleitung => ABER: user/login muss auch eine erlaubte seite sein ;)
-                 */
+
                 $flashMessenger = Zend_Controller_Action_HelperBroker::getStaticHelper('flashMessenger');
                 $flashMessenger->setNamespace('error')->addMessage('Please log in first!');
 

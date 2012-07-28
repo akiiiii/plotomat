@@ -22,6 +22,7 @@ class Application_Model_Form_Login extends Zend_Form {
                 ->setRequired(true);
 
         //// ReCaptcha
+        /*
         $registry = Zend_Registry::getInstance();
         $pub = $registry->config->recaptcha->pubkey;
         $priv = $registry->config->recaptcha->privkey;
@@ -43,6 +44,7 @@ class Application_Model_Form_Login extends Zend_Form {
         $captcha->removeDecorator('label')
                 ->removeDecorator('htmlTag')
                 ->setRequired(true);
+        */
 
         $submit = new Zend_Form_Element_Button('submit');
         $submit->setLabel('Login')->removeDecorator('DtDdWrapper');
@@ -54,7 +56,8 @@ class Application_Model_Form_Login extends Zend_Form {
                     array('ViewScript',
                         array('viewScript' => '_form_login.phtml'))));
 
-        $this->addElements(array($user, $pswd, $captcha, $submit));
+        //$this->addElements(array($user, $pswd, $captcha, $submit));
+        $this->addElements(array($user, $pswd, $submit));
     }
 
 }
