@@ -8,6 +8,8 @@
             <directory suffix=".php">../application</directory>
             <exclude>
                 <directory suffix=".phtml">../</directory>
+                <file>../application/Bootstrap.php</file>
+                <file>../application/controllers/ErrorController.php</file>
             </exclude>
         </whitelist>
     </filter>
