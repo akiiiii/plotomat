@@ -15,3 +15,5 @@ nbproject/
 #sensitive zend framework files
 application.ini
 
+#zend phpunit logs
+tests/log/
