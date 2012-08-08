@@ -11,14 +11,15 @@ class AuthController extends Zend_Controller_Action {
     }
 
     public function indexAction() {
-        /* Display only view */
+        /// no index action - only login -> redirect
+        $this->_redirect('/auth/login');
     }
 
     public function loginAction() {
         
         // already logged in?
         if(Zend_Auth::getInstance()->hasIdentity()) {
-            $this->_redirect('index');
+            $this->_redirect('/');
         }
         
         $form = new Application_Model_Form_Login(array('action' => '/auth/login'));

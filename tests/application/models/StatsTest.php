@@ -14,10 +14,6 @@ class Model_StatsTest extends ControllerTestCase {
         $this->stats = new Application_Model_Stats();
     }
     
-    public function testCanDoUnitTest() {
-        $this->assertTrue(true);
-    }
-    
     public function testCanAddCountry() {
         $testCountry = "Canada";
         $this->assertEquals(0, count($this->stats->getCountries()));

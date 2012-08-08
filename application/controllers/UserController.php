@@ -41,7 +41,6 @@ class UserController extends Zend_Controller_Action {
                     $this->_getParam('username'), $this->_getParam('email'), $this->_getParam('aclRole'));
         }
 
-        //Zend_Debug::dump($this->userService->GetAllUsers());
         $rowset = $this->userService->GetAllUsers();
         $this->view->users = $rowset->toArray();
     }

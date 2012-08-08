@@ -13,7 +13,7 @@ class IndexControllerTest extends ControllerTestCase {
         $this->assertAction('index');
         $this->assertResponseCode('200');
     }
-    
+ 
 }
 
 ?>

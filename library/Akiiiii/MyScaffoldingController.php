@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * belongs in application/controllers => verschoben zu archivierungszwecken
  *generell keine so gute Idee, weil alle Logik im Controller sitzt
  * werde ich erst mal nicht weiter verfolgen 
  */
